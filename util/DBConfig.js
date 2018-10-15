@@ -7,7 +7,7 @@ const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'demo',
+    database: 'graduation',
     port: 3306
     
 });

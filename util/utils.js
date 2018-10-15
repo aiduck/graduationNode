@@ -1,7 +1,8 @@
 
 const crypto = require('crypto')
 const id = {
-    report_file: '01',
+    collegeId: '1',
+    majorId: '2',
 }
 /**
  * 字符串转数组
@@ -18,6 +19,12 @@ let strToArr = (stringarr) => {
         return arr;
     }
     return null;
+}
+let getRom = () => {
+    let num1 =Math.floor(Math.random() * 10 + 1); 
+    let num2 = Math.floor(Math.random() * 20 + 1);
+    let num3 =  Math.floor(Math.random() * 30 + 1);
+    return num1*num2*num3;
 }
 
 let getDate = () => {
@@ -40,7 +47,14 @@ let getHash = () => {
  * @param {*所需ID类型} type 
  */
 let getId = type => {
-    return id[type] + getDate() + getHash()
+    return id[type] + getDate() + getHash();
+}
+/**
+ * 生成数字ID
+ * @param {*} type 
+ */
+let getNumId = (type,index) => {
+    return id[type] + index + getDate()+ getRom();
 }
 
 /**
@@ -72,7 +86,8 @@ let obj2MySql = filter => {
 let utils = {
     strToArr,
     getId,
-    obj2MySql
+    obj2MySql,
+    getNumId
 }
 
 module.exports = utils;
