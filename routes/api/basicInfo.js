@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+// api/basicInfo/ *
 const controller = require('../../db/controller/basicInfoController')
 
 // 插入操作

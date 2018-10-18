@@ -12,6 +12,7 @@ let strToArr = (stringarr) => {
     // "ttqw_withdraw_diff7.html,ttqw_withdraw_red.html,"
     // 去除" ,"变成字符串
     if(stringarr) {
+        // 去除前后引号
         let string = stringarr.substr(1,stringarr.length-3);
         // console.log(string);
         let arr;
@@ -19,12 +20,6 @@ let strToArr = (stringarr) => {
         return arr;
     }
     return null;
-}
-let getRom = () => {
-    let num1 =Math.floor(Math.random() * 10 + 1); 
-    let num2 = Math.floor(Math.random() * 20 + 1);
-    let num3 =  Math.floor(Math.random() * 30 + 1);
-    return num1*num2*num3;
 }
 
 let getDate = () => {
@@ -48,13 +43,6 @@ let getHash = () => {
  */
 let getId = type => {
     return id[type] + getDate() + getHash();
-}
-/**
- * 生成数字ID
- * @param {*} type 
- */
-let getNumId = (type,index) => {
-    return id[type] + index + getDate()+ getRom();
 }
 
 /**
@@ -87,7 +75,6 @@ let utils = {
     strToArr,
     getId,
     obj2MySql,
-    getNumId
 }
 
 module.exports = utils;
