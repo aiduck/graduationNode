@@ -1,9 +1,9 @@
 const queryHelper = require('../../util/DBQuery');
-const SQL = require('../sql/userInfoSQL');
+const SQL = require('../sql/teacherInfoSQL');
 const util = require('../../util/utils')
 
 /**
- * 查询固定范围的用户信息
+ * 查询固定范围的教师信息
  * @param {*limit start} startNum 
  * @param {*limit size} size 
  */
@@ -12,14 +12,14 @@ let queryLimitUser = (startNum, size) => {
     return queryHelper.queryPromise(sql, [startNum, size]);
 }
 /**
- * 查询用户信息数量
+ * 查询教师信息数量
  */
 let queryNum = () => {
     let sql = SQL.UserSQL.queryNum;
     return queryHelper.queryPromise(sql, null);
 }
 /**
- * 查询所有用户信息导出excel
+ * 查询所有教师信息导出excel
  */
 let query = () => {
     let sql = SQL.UserSQL.query;
@@ -35,36 +35,20 @@ let queryUserById = (userId) => {
 }
 
 let queryByFilter = (filter) => {
-    let strBase = 'select user_id, username, email, telno, address, user_type_name, status from userInfo where ';
+    let strBase = 'SELECT teacher.user_id, teacher.username, email, telno, address, user_type_name, status, sex, job_title, education FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
     strBase = strBase + util.obj2MySql(filter);
     return queryHelper.queryPromise(strBase, null);
 }
 
-/**
- * 更新用户状态
- * @param {*状态} status 
- * @param {*用户id} id 
- */
-let updatedStatus = (status, id) => {
-    let sql = SQL.UserSQL.updatedStatus;
-    return queryHelper.queryPromise(sql, [status, id]);
-}
-/**
- * 更新密码
- * @param {*用户id} id 
- */
-let updatePwc = (id) => {
-    let sql = SQL.UserSQL.updatePwc;
-    return queryHelper.queryPromise(sql, id);
-}
 
-let updateUserInfo = (username,email,telno,address,user_type_name,user_id) => {
+
+let updateUserInfo = (username, email, telno, address, user_type_name, sex, job_title, education, user_id) => {
     let sql = SQL.UserSQL.updateUserInfo;
-    return queryHelper.queryPromise(sql, [username, email, telno, address, user_type_name, user_id]);
+    return queryHelper.queryPromise(sql, [username, email, telno, address, user_type_name, sex, job_title, education, user_id]);
 }
 
 /**
- * 批量插入用户基本信息
+ * 批量插入教师基本信息
  * @param {*数组} values 
  */
 let insertUserList = (values) => {
@@ -72,14 +56,14 @@ let insertUserList = (values) => {
     return queryHelper.queryPromise(sql, [values]);
 }
 /**
- * 批量删除用户信息
+ * 批量删除教师信息
  * @param {*用户id列表} userList 
  */
 let daleteUserList = (userList) => {
-    let sqlBase = `delete from userInfo where user_id in (`;
+    let sqlBase = `delete teacher.*, userInfo.* from teacher, userInfo  where teacher.user_id =  userInfo.user_id and userInfo.user_id in (`;
     userList.map((item, index) => {
         if(index < userList.length - 1) {
-            sqlBase = sqlBase +'\'' +item + '\','
+            sqlBase = sqlBase + '\'' +item + '\','
         } else {
             sqlBase = sqlBase + '\''+ item + '\');'
         }
@@ -88,21 +72,19 @@ let daleteUserList = (userList) => {
 }
 
 
-
-
-
-
 let Dao = {
+    insertUserList,
+
     queryLimitUser,
     queryNum,
     query,
+
+
     queryUserById,
     queryByFilter,
 
-    insertUserList,
+    
 
-    updatedStatus,
-    updatePwc,
     updateUserInfo,
 
     daleteUserList,

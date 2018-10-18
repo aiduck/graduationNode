@@ -8,6 +8,7 @@ var logger = require('morgan');
 // api接口
 const basicInfoRouter = require('./routes/api/basicInfo')
 const userInfoRouter = require('./routes/api/userInfo')
+const teacherInfoRouter = require('./routes/api/teacherInfo')
 
 var app = express();
 
@@ -25,6 +26,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // 自己写到接口
 app.use('/api/basicInfo',basicInfoRouter);
 app.use('/api/userInfo',userInfoRouter);
+app.use('/api/teacherInfo',teacherInfoRouter);
+
+
 
 
 // catch 404 and forward to error handler

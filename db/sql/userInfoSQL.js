@@ -2,7 +2,7 @@ var UserSQL = {
     insert:'INSERT IGNORE INTO userInfo(user_id,username,password,email,telno,address,user_type_name,status) VALUES ?', 
     
     query: 'SELECT user_id, username, email, telno, address, user_type_name, status FROM userInfo',
-    queryLimit: 'SELECT * FROM userInfo limit ?, ?',
+    queryLimit: 'SELECT user_id, username, email, telno, address, user_type_name, status FROM userInfo limit ?, ?',
     queryNum:'SELECT count(*) as number FROM userInfo',
     queryById: 'SELECT * FROM userInfo WHERE user_id= ?',
 
