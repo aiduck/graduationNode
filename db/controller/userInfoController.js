@@ -5,21 +5,41 @@ const utils = require('../../util/utils')
 let insertUserList = async (req, res, next) => {
     let userArr = req.body;
     let values = [];
+    let valuesOth = [];
+    let valuesTea = [];
+    let valuesStu = [];
+    let user_type_name = '用户';
+    // 对于用户基本操作已经没有导入功能了
     if(userArr.constructor == Array) {
         userArr.map((item, index) => {
             let value = [`${item.user_id}`,`${item.username}`,`${item.password}`,`${item.email}`,`${item.telno}`,`${item.address}`,`${item.user_type_name}`,`${item.status}`];
+            let valueOth = [`${item.user_id}`,`${item.username}`];
+            // 存入用户信息
             values.push(value);
+            if(item.user_type_name === '教师') {
+                valuesTea.push(valueOth);
+            } else if(item.user_type_name === '学生') {
+                valuesStu.push(valueOth);
+            }
         })
     } else {
+        // 插入单个用户的操作
         let value = [`${userArr.user_id}`,`${userArr.username}`,`123456`,`${userArr.email}`,`${userArr.telno}`,`${userArr.address}`,`${userArr.user_type_name}`,`${userArr.status}`];
+        let valueOth = [`${userArr.user_id}`,`${userArr.username}`];
+        user_type_name = userArr.user_type_name;
         values.push(value);
+        valuesOth.push(valueOth);
     }
-    console.log(values);
     try {
-        let  user = await userInfoDao.insertUserList(values);
+        let user;
+        if(user_type_name  === '用户') {
+            user = await userInfoDao.insertUserListTeaStu(values,valuesTea,valuesStu);
+        } else {
+            user = await userInfoDao.insertUserListOth(values,valuesOth,user_type_name);
+        }
+        console.log(user)
         res.send({
             code: 200,
-            data: user.data,
             msg: 'success'
         })
     }
@@ -196,11 +216,14 @@ let updateUserInfo = async(req, res, next) => {
 
 // 删除用户信息
 let daleteUserList = async(req, res, next) => {
+    let userList = req.body.userList;
+    let teacherList = req.body.teacherList;
+    let studentList = req.body.studentList;
+
     try {
-        let deletePro = await userInfoDao.daleteUserList(req.body.userList);
+        let deletePro = await userInfoDao.daleteUserList(userList, teacherList, studentList);
         res.send({
             code: 200,
-            data: deletePro.data,
             msg: 'success'
         })
     }
