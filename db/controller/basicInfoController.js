@@ -161,20 +161,12 @@ let updateStatus = async (req, res, next) => {
     let status = req.body.status;
     let item = req.body.item;
     try {
-        var isAllUpdate = false;
         let statusPro = await basicInfoDao.updateStatus(type, status, item);
+        console.log(statusPro);
         if(statusPro.code === 200) {
-            if(type === 'college') {
-                let id = item.college_id;
-                let majorStatusPro = await basicInfoDao.updateMajStaByCol(status, id);
-                if(majorStatusPro.code === 200) {
-                    isAllUpdate = true;
-                }
-            } 
-        }
-        if(type === 'major' || isAllUpdate) {
             res.send({
                 code: 200,
+                data: statusPro.data,
                 msg: 'update success'
             })
         } 

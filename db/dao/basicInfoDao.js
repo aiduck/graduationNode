@@ -1,3 +1,4 @@
+const db = require('../../util/DBConfig')
 const queryHelper = require('../../util/DBQuery');
 const SQL = require('../sql/basicInfoSQL');
 
@@ -72,24 +73,52 @@ let queryAdClassById = (majorId) => {
  */
 let updateStatus = (type,status,item) => {
     if(type === 'college') {
-        let id = item.college_id;
-        let sql = SQL.StatueSQL.updateColStatue;
-        return queryHelper.queryPromise(sql, [status, id]);
+       
+        return new Promise(async (resolve, reject) => {
+            await db.getConnection(async (err, connection) => {
+              if (err) {
+                resolve({
+                  code: 500,
+                  msg: '获取数据库链接失败'
+                })
+              }
+              else {
+                try {
+                  await connection.beginTransaction()
+                  // 更新学院状态
+                  let id = item.college_id;
+                  let sql1 = SQL.StatueSQL.updateColStatue;
+                  let res1 = await queryHelper.queryPromise(sql1, [status, id]);
+                  // 更新学院下面的专业状态
+                  let sql2 = SQL.StatueSQL.updateAllMajSta;
+                  let res2 = await queryHelper.queryPromise(sql2, [status, id]);
+                  await connection.commit()
+                  connection.release()
+                  resolve({
+                    code: 200,
+                    msg: '更新学院以及下面的专业状态成功'
+                  })
+                }
+                catch (error) {
+                  console.log('出错了，准备回滚', error)
+                  await connection.rollback(() => {
+                    console.log('回滚成功')
+                    connection.release()
+                  });
+                  resolve({
+                    code: 500,
+                    msg: '更新学院以及下面的专业状态失败'
+                  })
+                }
+              }
+            })
+          })
     }
     else if(type === 'major') {
         let id = item.major_id;
         let sql = SQL.StatueSQL.updateMajStatue;
         return queryHelper.queryPromise(sql, [status, id]);
     }
-}
-/**
- * 根据学院id 更新学院下面所有专业状态
- * @param {*更新状态} status 
- * @param {*学院id} id 
- */
-let updateMajStaByCol = (status, id) => {
-    let sql = SQL.StatueSQL.updateAllMajSta;
-    return queryHelper.queryPromise(sql, [status, id]);
 }
 
 // 删除操作
@@ -124,7 +153,6 @@ let Dao = {
     queryAdClassById,
 
     updateStatus,
-    updateMajStaByCol, // 多处来的更新所有major的状态的操作
 
     delAdclass,
 
