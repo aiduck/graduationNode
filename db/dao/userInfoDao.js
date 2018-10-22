@@ -248,9 +248,9 @@ let daleteUserList = (userList, teacherList, studentList) => {
                     let sqlBaseTea = `delete from teacher where user_id in (`;
                     teacherList.map((item, index) => {
                         if(index < teacherList.length - 1) {
-                            sqlBase = sqlBase +'\'' +item + '\','
+                            sqlBaseTea = sqlBaseTea +'\'' +item + '\','
                         } else {
-                            sqlBase = sqlBase + '\''+ item + '\');'
+                            sqlBaseTea = sqlBaseTea + '\''+ item + '\');'
                         }
                     })
                     let res2 = await queryHelper.queryPromise(sqlBaseTea, null);
@@ -258,9 +258,9 @@ let daleteUserList = (userList, teacherList, studentList) => {
                     let sqlBaseStu = `delete from student where user_id in (`;
                     studentList.map((item, index) => {
                         if(index < studentList.length - 1) {
-                            sqlBase = sqlBase +'\'' +item + '\','
+                            sqlBaseStu = sqlBaseStu +'\'' +item + '\','
                         } else {
-                            sqlBase = sqlBase + '\''+ item + '\');'
+                            sqlBaseStu = sqlBaseStu + '\''+ item + '\');'
                         }
                     })
                     let res3 = await queryHelper.queryPromise(sqlBaseStu, null);

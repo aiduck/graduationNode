@@ -1,5 +1,4 @@
 const teacherInfoDao = require('../dao/teacherInfoDao')
-const userInfoDao = require('../dao/userInfoDao')
 const utils = require('../../util/utils')
 
 // 批量导入用户信息
@@ -7,30 +6,31 @@ let insertUserList = async (req, res, next) => {
     let userArr = req.body;
     let values = [];
     let teavalues = [];
+    let updateTea = [];
     if(userArr.constructor == Array) {
         userArr.map((item, index) => {
             let value = [`${item.user_id}`,`${item.username}`,`${item.password}`,`${item.email}`,`${item.telno}`,`${item.address}`,`${item.user_type_name}`,`${item.status}`];
             let teaValue = [`${item.user_id}`,`${item.username}`,`${item.sex}`,`${item.job_title}`,`${item.education}`];
+            let teaUpdate = [`${item.username}`,`${item.sex}`,`${item.job_title}`,`${item.education}`,`${item.user_id}`];
             values.push(value);
-            teavalues.push(teaValue)
+            teavalues.push(teaValue);
+            updateTea.push(teaUpdate);
         })
     } else {
         let value = [`${userArr.user_id}`,`${userArr.username}`,`123456`,`${userArr.email}`,`${userArr.telno}`,`${userArr.address}`,`教师`,`${userArr.status}`];
         let teaValue = [`${userArr.user_id}`,`${userArr.username}`,`${userArr.sex}`,`${userArr.job_title}`,`${userArr.education}`];
+        let teaUpdate = [`${userArr.username}`,`${userArr.sex}`,`${userArr.job_title}`,`${userArr.education}`,`${userArr.user_id}`];
         values.push(value);
         teavalues.push(teaValue);
+        updateTea.push(teaUpdate);
+
     }
     try {
-        let  user = await userInfoDao.insertUserList(values);
-        let teacher = await teacherInfoDao.insertUserList(teavalues);
-        if(user.code === 200 && teacher.code === 200) {
-            res.send({
-                code: 200,
-                userdata: user.data,
-                teacherdata: teacher.data,
-                msg: 'success'
-            })
-        }
+        let  user = await teacherInfoDao.insertUserList(values,teavalues,updateTea);
+        res.send({
+            code: 200,
+            msg: 'success'
+        })
     }
     catch (err) {
         res.send({
@@ -159,7 +159,7 @@ let updateUserInfo = async(req, res, next) => {
         let userPro = await teacherInfoDao.updateUserInfo(username,email,telno,address,user_type_name,sex,job_title,education,user_id);
         res.send({
             code: 200,
-            data: userPro.data,
+            // data: userPro.data,
             msg: 'success'
         })
     }
@@ -174,9 +174,12 @@ let updateUserInfo = async(req, res, next) => {
 
 // 删除用户信息
 let daleteUserList = async(req, res, next) => {
+    
+    let userList = req.body.userList;
+    let teacherList = req.body.userList;
+
     try {
-        let teacherPro = teacherInfoDao.daleteUserList(req.body.userList);
-        console.log(teacherPro)
+        let deletePro = await teacherInfoDao.daleteUserList(userList, teacherList);
         res.send({
             code: 200,
             msg: 'success'

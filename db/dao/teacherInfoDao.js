@@ -1,4 +1,5 @@
 const queryHelper = require('../../util/DBQuery');
+const db = require('../../util/DBConfig');
 const SQL = require('../sql/teacherInfoSQL');
 const util = require('../../util/utils')
 
@@ -33,7 +34,10 @@ let queryUserById = (userId) => {
     let sql = SQL.UserSQL.queryById;
     return queryHelper.queryPromise(sql, userId);
 }
-
+/**
+ * 筛选教师
+ * @param {*筛选条件} filter 
+ */
 let queryByFilter = (filter) => {
     let strBase = 'SELECT teacher.user_id, teacher.username, email, telno, address, user_type_name, status, sex, job_title, education FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
     strBase = strBase + util.obj2MySql(filter);
@@ -41,36 +45,169 @@ let queryByFilter = (filter) => {
 }
 
 
-
+/**
+ * 更新教师用户信息
+ * @param {*} username 
+ * @param {*} email 
+ * @param {*} telno 
+ * @param {*} address 
+ * @param {*} user_type_name 
+ * @param {*} sex 
+ * @param {*} job_title 
+ * @param {*} education 
+ * @param {*} user_id 
+ */
 let updateUserInfo = (username, email, telno, address, user_type_name, sex, job_title, education, user_id) => {
-    let sql = SQL.UserSQL.updateUserInfo;
-    return queryHelper.queryPromise(sql, [username, email, telno, address, user_type_name, sex, job_title, education, user_id]);
+    return new Promise(async (resolve, reject) => {
+        await db.getConnection(async (err, connection) => {
+            if (err) {
+                resolve({
+                    code: 500,
+                    msg: '获取数据库链接失败'
+                })
+            }
+            else {
+                try {
+                    await connection.beginTransaction()
+
+                    let sql1 = SQL.UserSQL.updateTeaInfo;
+                    let res1 = await queryHelper.queryPromise(sql1, [username, sex, job_title, education, user_id]);
+                    let sql2 = SQL.UserSQL.updateUserInfo;
+                    let res2 = await queryHelper.queryPromise(sql2,[username, email, telno, address, user_type_name, user_id])
+                    
+                    await connection.commit()
+                    connection.release()
+                    resolve({
+                        code: 200,
+                        msg: '更改用户信息成功'
+                    })
+                }
+                catch (error) {
+                    console.log('出错了，准备回滚', error)
+                    await connection.rollback(() => {
+                        console.log('回滚成功')
+                        connection.release()
+                    });
+                    resolve({
+                        code: 500,
+                        msg: '更改用户信息失败'
+                    })
+                }
+            }
+        })
+    })
+   
 }
 
 /**
  * 批量插入教师基本信息
  * @param {*数组} values 
  */
-let insertUserList = (values) => {
-    let sql = SQL.UserSQL.insert;
-    return queryHelper.queryPromise(sql, [values]);
-}
-/**
- * 批量删除教师信息
- * @param {*用户id列表} userList 
- */
-let daleteUserList = (userList) => {
-    let sqlBase = `delete teacher.*, userInfo.* from teacher, userInfo  where teacher.user_id =  userInfo.user_id and userInfo.user_id in (`;
-    userList.map((item, index) => {
-        if(index < userList.length - 1) {
-            sqlBase = sqlBase + '\'' +item + '\','
-        } else {
-            sqlBase = sqlBase + '\''+ item + '\');'
-        }
+let insertUserList = (values, teavalues,updateTea) => {
+    return new Promise(async (resolve, reject) => {
+        await db.getConnection(async (err, connection) => {
+            if (err) {
+                resolve({
+                    code: 500,
+                    msg: '获取数据库链接失败'
+                })
+            }
+            else {
+                try {
+                    await connection.beginTransaction()
+                    // 插入用户信息
+                    let sql1 = SQL.UserSQL.insert;
+                    let res1 = await queryHelper.queryPromise(sql1, [teavalues]);
+                    // 插入教师信息
+                    let sql2 = SQL.UserSQL.insertUser;
+                    let res2 = await queryHelper.queryPromise(sql2, [values]);
+                    // 存在先插入用户信息，在插入教师信息（需要更新教师的特有信息）
+                    // let sql3 = SQL.UserSQL.updateTeaInfo;
+                    // let res3 = await queryHelper.queryPromise(sql3, [updateTea]);
+                    await connection.commit()
+                    connection.release()
+                    resolve({
+                        code: 200,
+                        msg: '插入用户信息成功'
+                    })
+                }
+                catch (error) {
+                    console.log('出错了，准备回滚', error)
+                    await connection.rollback(() => {
+                        console.log('回滚成功')
+                        connection.release()
+                    });
+                    resolve({
+                        code: 500,
+                        msg: '插入用户信息失败'
+                    })
+                }
+            }
+        })
     })
-    return queryHelper.queryPromise(sqlBase, null);
 }
 
+/**
+ * 批量删除用户信息
+ * @param {*用户id列表} userList 
+ * @param {*教师id列表} teacherList 
+ */
+let daleteUserList = (userList, teacherList) => {
+    console.log(userList);
+    console.log(teacherList);
+    return new Promise(async (resolve, reject) => {
+        await db.getConnection(async (err, connection) => {
+            if (err) {
+                resolve({
+                    code: 500,
+                    msg: '获取数据库链接失败'
+                })
+            }
+            else {
+                try {
+                    await connection.beginTransaction()
+                    // 删除用户信息
+                    let sqlBase = `delete from userInfo where user_id in (`;
+                    userList.map((item, index) => {
+                        if(index < userList.length - 1) {
+                            sqlBase = sqlBase +'\'' +item + '\','
+                        } else {
+                            sqlBase = sqlBase + '\''+ item + '\');'
+                        }
+                    })
+                    let res1 = await queryHelper.queryPromise(sqlBase, null);
+                    // 删除教师信息
+                    let sqlBaseTea = `delete from teacher where user_id in (`;
+                    teacherList.map((item, index) => {
+                        if(index < teacherList.length - 1) {
+                            sqlBaseTea = sqlBaseTea +'\'' +item + '\','
+                        } else {
+                            sqlBaseTea = sqlBaseTea + '\''+ item + '\');'
+                        }
+                    })
+                    let res2 = await queryHelper.queryPromise(sqlBaseTea, null);
+                    await connection.commit()
+                    connection.release()
+                    resolve({
+                        code: 200,
+                        msg: '批量删除用户信息成功'
+                    })
+                }
+                catch (error) {
+                    console.log('出错了，准备回滚', error)
+                    await connection.rollback(() => {
+                        console.log('回滚成功')
+                        connection.release()
+                    });
+                    resolve({
+                        code: 500,
+                        msg: '批量删除用户信息失败'
+                    })
+                }
+            }
+        })
+    })
+}
 
 let Dao = {
     insertUserList,
