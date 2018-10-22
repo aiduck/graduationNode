@@ -38,19 +38,19 @@ let queryUserById = (userId) => {
  * 筛选教师
  * @param {*筛选条件} filter 
  */
-let queryByFilter = (filter) => {
+let queryByFilter = (filter,startNum,size) => {
     if(filter.user_id !== undefined) {
         console.log(filter.user_id);
         let user_id =  filter.user_id;
         filter['teacher.user_id'] = user_id;
         if(delete filter.user_id) {
             let strBase = 'SELECT teacher.user_id, teacher.username, email, telno, address, user_type_name, status, sex, job_title, education FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
-            strBase = strBase + util.obj2MySql(filter);
+            strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
             return queryHelper.queryPromise(strBase, null);
         }
     } else {
         let strBase = 'SELECT teacher.user_id, teacher.username, email, telno, address, user_type_name, status, sex, job_title, education FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
-        strBase = strBase + util.obj2MySql(filter);
+        strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
         return queryHelper.queryPromise(strBase, null);
     }
    

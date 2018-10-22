@@ -127,8 +127,12 @@ let queryUserById  =  async(req, res, next) => {
 // 根据筛选条件筛选信息 obj2MySql
 let queryByFilter = async(req, res, next) => {
     let filter = req.body.filter;
+    let pageSize = req.body.pageSize;
+    let currentPage = req.body.currentPage;
+    let startNum = (currentPage - 1) * pageSize;
+    let size = pageSize * 1;
     try {
-        let filterPro = await userInfoDao.queryByFilter(filter);
+        let filterPro = await userInfoDao.queryByFilter(filter,startNum,size);
         let data = {
             userList: filterPro.data
         }

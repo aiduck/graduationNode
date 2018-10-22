@@ -38,19 +38,19 @@ let queryUserById = (userId) => {
  * 筛选教师
  * @param {*筛选条件} filter 
  */
-let queryByFilter = (filter) => {
+let queryByFilter = (filter,startNum,size) => {
     if(filter.user_id !== undefined) {
         console.log(filter.user_id);
         let user_id =  filter.user_id;
         filter['student.user_id'] = user_id;
         if(delete filter.user_id) {
-            let strBase = 'SELECT student.user_id, student.username, email, telno, address, user_type_name, status, aclass_id FROM student inner join userInfo on student.user_id = userInfo.user_id  WHERE ';
-            strBase = strBase + util.obj2MySql(filter);
+            let strBase = 'SELECT student.user_id, student.username, email, telno, address, user_type_name, status, college_id,major_id,aclass_id FROM student inner join userInfo on student.user_id = userInfo.user_id  WHERE ';
+            strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
             return queryHelper.queryPromise(strBase, null);
         }
     } else {
-        let strBase = 'SELECT student.user_id, student.username, email, telno, address, user_type_name, status, aclass_id FROM student inner join userInfo on student.user_id = userInfo.user_id  WHERE ';
-        strBase = strBase + util.obj2MySql(filter);
+        let strBase = 'SELECT student.user_id, student.username, email, telno, address, user_type_name, status, college_id,major_id,aclass_id FROM student inner join userInfo on student.user_id = userInfo.user_id  WHERE ';
+        strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
         return queryHelper.queryPromise(strBase, null);
     }
    
@@ -67,7 +67,7 @@ let queryByFilter = (filter) => {
  * @param {*} sex 
  * @param {*} user_id 
  */
-let updateUserInfo = (username, email, telno, address, user_type_name, aclass_id, user_id) => {
+let updateUserInfo = (username, email, telno, address, user_type_name, college_id,major_id,aclass_id, user_id) => {
     return new Promise(async (resolve, reject) => {
         await db.getConnection(async (err, connection) => {
             if (err) {
@@ -81,7 +81,7 @@ let updateUserInfo = (username, email, telno, address, user_type_name, aclass_id
                     await connection.beginTransaction()
 
                     let sql1 = SQL.UserSQL.updateStuInfo;
-                    let res1 = await queryHelper.queryPromise(sql1, [username, aclass_id, user_id]);
+                    let res1 = await queryHelper.queryPromise(sql1, [username, college_id,major_id,aclass_id, user_id]);
                     let sql2 = SQL.UserSQL.updateUserInfo;
                     let res2 = await queryHelper.queryPromise(sql2,[username, email, telno, address, user_id])
                     

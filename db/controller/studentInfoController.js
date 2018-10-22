@@ -9,13 +9,13 @@ let insertUserList = async (req, res, next) => {
     if(userArr.constructor == Array) {
         userArr.map((item, index) => {
             let value = [`${item.user_id}`,`${item.username}`,`${item.password}`,`${item.email}`,`${item.telno}`,`${item.address}`,`${item.user_type_name}`,`${item.status}`];
-            let stuValue = [`${item.user_id}`,`${item.username}`,`${item.aclass_id}`];
+            let stuValue = [`${item.user_id}`,`${item.username}`,`${item.college_id}`,`${item.major_id}`,`${item.aclass_id}`];
             values.push(value);
             stuvalues.push(stuValue);
         })
     } else {
         let value = [`${userArr.user_id}`,`${userArr.username}`,`123456`,`${userArr.email}`,`${userArr.telno}`,`${userArr.address}`,`学生`,`${userArr.status}`];
-        let stuValue = [`${userArr.user_id}`,`${userArr.username}`,`${userArr.aclass_id}`];
+        let stuValue = [`${userArr.user_id}`,`${userArr.username}`,`${userArr.college_id}`,`${userArr.major_id}`,`${userArr.aclass_id}`];
         values.push(value);
         stuvalues.push(stuValue);
 
@@ -115,8 +115,12 @@ let queryUserById  =  async(req, res, next) => {
 let queryByFilter = async(req, res, next) => {
 
     let filter = req.body.filter;
+    let pageSize = req.body.pageSize;
+    let currentPage = req.body.currentPage;
+    let startNum = (currentPage - 1) * pageSize;
+    let size = pageSize * 1;
     try {
-        let filterPro = await studentInfoDao.queryByFilter(filter);
+        let filterPro = await studentInfoDao.queryByFilter(filter,startNum,size);
         let data = {
             userList: filterPro.data
         }
@@ -144,11 +148,13 @@ let updateUserInfo = async(req, res, next) => {
         telno, 
         address, 
         user_type_name, 
+        college_id,
+        major_id,
         aclass_id,
         user_id,
     } = req.body.userForm;
     try {
-        let userPro = await studentInfoDao.updateUserInfo(username,email,telno,address,user_type_name,aclass_id,user_id);
+        let userPro = await studentInfoDao.updateUserInfo(username,email,telno,address,user_type_name,college_id,major_id,aclass_id,user_id);
         console.log(userPro)
         if(userPro.code === 200) {
             res.send({

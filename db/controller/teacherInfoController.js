@@ -118,8 +118,12 @@ let queryUserById  =  async(req, res, next) => {
 let queryByFilter = async(req, res, next) => {
 
     let filter = req.body.filter;
+    let pageSize = req.body.pageSize;
+    let currentPage = req.body.currentPage;
+    let startNum = (currentPage - 1) * pageSize;
+    let size = pageSize * 1;
     try {
-        let filterPro = await teacherInfoDao.queryByFilter(filter);
+        let filterPro = await teacherInfoDao.queryByFilter(filter,startNum,size);
         let data = {
             userList: filterPro.data
         }

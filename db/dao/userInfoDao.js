@@ -35,9 +35,9 @@ let queryUserById = (userId) => {
     return queryHelper.queryPromise(sql, userId);
 }
 
-let queryByFilter = (filter) => {
+let queryByFilter = (filter,startNum,size) => {
     let strBase = 'select user_id, username, email, telno, address, user_type_name, status from userInfo where ';
-    strBase = strBase + util.obj2MySql(filter);
+    strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
     return queryHelper.queryPromise(strBase, null);
 }
 
