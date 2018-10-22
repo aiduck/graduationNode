@@ -1,6 +1,6 @@
 const queryHelper = require('../../util/DBQuery');
 const db = require('../../util/DBConfig');
-const SQL = require('../sql/teacherInfoSQL');
+const SQL = require('../sql/studentInfoSQL');
 const util = require('../../util/utils')
 
 /**
@@ -42,14 +42,14 @@ let queryByFilter = (filter) => {
     if(filter.user_id !== undefined) {
         console.log(filter.user_id);
         let user_id =  filter.user_id;
-        filter['teacher.user_id'] = user_id;
+        filter['student.user_id'] = user_id;
         if(delete filter.user_id) {
-            let strBase = 'SELECT teacher.user_id, teacher.username, email, telno, address, user_type_name, status, sex, job_title, education FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
+            let strBase = 'SELECT student.user_id, student.username, email, telno, address, user_type_name, status, aclass_id FROM student inner join userInfo on student.user_id = userInfo.user_id  WHERE ';
             strBase = strBase + util.obj2MySql(filter);
             return queryHelper.queryPromise(strBase, null);
         }
     } else {
-        let strBase = 'SELECT teacher.user_id, teacher.username, email, telno, address, user_type_name, status, sex, job_title, education FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
+        let strBase = 'SELECT student.user_id, student.username, email, telno, address, user_type_name, status, aclass_id FROM student inner join userInfo on student.user_id = userInfo.user_id  WHERE ';
         strBase = strBase + util.obj2MySql(filter);
         return queryHelper.queryPromise(strBase, null);
     }
@@ -65,11 +65,9 @@ let queryByFilter = (filter) => {
  * @param {*} address 
  * @param {*} user_type_name 
  * @param {*} sex 
- * @param {*} job_title 
- * @param {*} education 
  * @param {*} user_id 
  */
-let updateUserInfo = (username, email, telno, address, user_type_name, sex, job_title, education, user_id) => {
+let updateUserInfo = (username, email, telno, address, user_type_name, aclass_id, user_id) => {
     return new Promise(async (resolve, reject) => {
         await db.getConnection(async (err, connection) => {
             if (err) {
@@ -82,8 +80,8 @@ let updateUserInfo = (username, email, telno, address, user_type_name, sex, job_
                 try {
                     await connection.beginTransaction()
 
-                    let sql1 = SQL.UserSQL.updateTeaInfo;
-                    let res1 = await queryHelper.queryPromise(sql1, [username, sex, job_title, education, user_id]);
+                    let sql1 = SQL.UserSQL.updateStuInfo;
+                    let res1 = await queryHelper.queryPromise(sql1, [username, aclass_id, user_id]);
                     let sql2 = SQL.UserSQL.updateUserInfo;
                     let res2 = await queryHelper.queryPromise(sql2,[username, email, telno, address, user_id])
                     
@@ -112,10 +110,10 @@ let updateUserInfo = (username, email, telno, address, user_type_name, sex, job_
 }
 
 /**
- * 批量插入教师基本信息
+ * 批量插入学生基本信息
  * @param {*数组} values 
  */
-let insertUserList = (values, teavalues) => {
+let insertUserList = (values, stuvalues) => {
     return new Promise(async (resolve, reject) => {
         await db.getConnection(async (err, connection) => {
             if (err) {
@@ -127,12 +125,12 @@ let insertUserList = (values, teavalues) => {
             else {
                 try {
                     await connection.beginTransaction()
-                    // 插入用户信息
+                    // 插入学生信息
                     let sql1 = SQL.UserSQL.insert;
-                    let res1 = await queryHelper.queryPromise(sql1, [teavalues]);
-                    // 插入教师信息
+                    let res1 = await queryHelper.queryPromise(sql1, [stuvalues]);
+                    // 插入用户信息
                     let sql2 = SQL.UserSQL.insertUser;
-                    let res2 = await queryHelper.queryPromise(sql2, [values]);
+                    let res2 = await queryHelper.queryPromise(sql2, [values]);    
                     await connection.commit()
                     connection.release()
                     resolve({
@@ -159,9 +157,9 @@ let insertUserList = (values, teavalues) => {
 /**
  * 批量删除用户信息
  * @param {*用户id列表} userList 
- * @param {*教师id列表} teacherList 
+ * @param {*学生id列表} studentList 
  */
-let daleteUserList = (userList, teacherList) => {
+let daleteUserList = (userList, studentList) => {
     return new Promise(async (resolve, reject) => {
         await db.getConnection(async (err, connection) => {
             if (err) {
@@ -184,15 +182,16 @@ let daleteUserList = (userList, teacherList) => {
                     })
                     let res1 = await queryHelper.queryPromise(sqlBase, null);
                     // 删除教师信息
-                    let sqlBaseTea = `delete from teacher where user_id in (`;
-                    teacherList.map((item, index) => {
-                        if(index < teacherList.length - 1) {
-                            sqlBaseTea = sqlBaseTea +'\'' +item + '\','
+                    let sqlBaseStu = `delete from student where user_id in (`;
+                    studentList.map((item, index) => {
+                        if(index < studentList.length - 1) {
+                            sqlBaseStu = sqlBaseStu +'\'' +item + '\','
                         } else {
-                            sqlBaseTea = sqlBaseTea + '\''+ item + '\');'
+                            sqlBaseStu = sqlBaseStu + '\''+ item + '\');'
                         }
                     })
-                    let res2 = await queryHelper.queryPromise(sqlBaseTea, null);
+                    let res2 = await queryHelper.queryPromise(sqlBaseStu, null);
+                    console.log(res2);
                     await connection.commit()
                     connection.release()
                     resolve({

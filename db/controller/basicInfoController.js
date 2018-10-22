@@ -162,7 +162,6 @@ let updateStatus = async (req, res, next) => {
     let item = req.body.item;
     try {
         let statusPro = await basicInfoDao.updateStatus(type, status, item);
-        console.log(statusPro);
         if(statusPro.code === 200) {
             res.send({
                 code: 200,
@@ -200,12 +199,12 @@ let queryColSta = async (req, res, next) => {
 
 // 删除班级
 let delAdclass = async (req, res, next) => {
-    // console.log(req.body.adclassObj);
+
 
     var adclassObj = req.body.adclassObj;
     try {
         let adclassPro = await basicInfoDao.delAdclass(adclassObj);
-        console.log(adclassPro);
+
         if(adclassPro.code === 200) {
 
         }

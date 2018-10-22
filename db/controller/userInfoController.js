@@ -37,7 +37,6 @@ let insertUserList = async (req, res, next) => {
         } else {
             user = await userInfoDao.insertUserListOth(values,valuesOth,user_type_name);
         }
-        console.log(user)
         res.send({
             code: 200,
             msg: 'success'
@@ -63,7 +62,6 @@ let queryLimitUser = async(req, res, next) => {
     try {
         let user = await userInfoDao.queryLimitUser(startNum,size);
         let userNum = await userInfoDao.queryNum();
-        // console.log(userNum)
         let data = {
             userList: user.data,
             total: userNum.data[0].number
@@ -106,7 +104,6 @@ let queryUser =  async(req, res, next) => {
 }
 // 根据id查个人用户信息
 let queryUserById  =  async(req, res, next) => {
-    // console.log(req.body.userId);
     try {
         let userPro = await userInfoDao.queryUserById(req.body.user_id);
         let data = {
@@ -129,7 +126,6 @@ let queryUserById  =  async(req, res, next) => {
 
 // 根据筛选条件筛选信息 obj2MySql
 let queryByFilter = async(req, res, next) => {
-    // console.log(req.body.filter);
     let filter = req.body.filter;
     try {
         let filterPro = await userInfoDao.queryByFilter(filter);

@@ -9,7 +9,7 @@ var logger = require('morgan');
 const basicInfoRouter = require('./routes/api/basicInfo')
 const userInfoRouter = require('./routes/api/userInfo')
 const teacherInfoRouter = require('./routes/api/teacherInfo')
-// const studentInfoRouter = require('./routes/api/studentInfo')
+const studentInfoRouter = require('./routes/api/studentInfo')
 
 var app = express();
 
@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/basicInfo',basicInfoRouter);
 app.use('/api/userInfo',userInfoRouter);
 app.use('/api/teacherInfo',teacherInfoRouter);
-// app.use('/api/studentInfo',studentInfoRouter);
+app.use('/api/studentInfo',studentInfoRouter);
 
 
 
