@@ -11,11 +11,14 @@ let insterCollege = async (req, res, next) => {
     })
     try {
         let  college = await basicInfoDao.insertCollege(values);
-        res.send({
-            code: 200,
-            data: college.data,
-            msg: 'success'
-        })
+        console.log(college)
+        if(college.code === 200) {
+            res.send({
+                code: 200,
+                data: college.data,
+                msg: 'success'
+            })
+        }
     }
     catch (err) {
         res.send({
@@ -34,11 +37,14 @@ let insterMajor = async (req, res, next) => {
     })
     try {
         let  major = await basicInfoDao.insertMajor(values);
-        res.send({
-            code: 200,
-            data: major.data,
-            msg: 'success'
-        });
+        console.log(major);
+        if(major.code === 200) {
+            res.send({
+                code: 200,
+                data: major.data,
+                msg: 'success'
+            });
+        }
     }
     catch (err) {
         res.send({
@@ -58,11 +64,15 @@ let insterAdclass = async (req, res, next) => {
     })
     try {
         let  adclass = await basicInfoDao.insertAdclass(values);
-        res.send({
-            code: 200,
-            data: adclass.data,
-            msg: 'success'
-        });
+        console.log(adclass)
+        if(adclass.code === 200) {
+            res.send({
+                code: 200,
+                data: adclass.data,
+                msg: 'success'
+            });
+        }
+       
     }
     catch (err) {
         res.send({
@@ -77,6 +87,7 @@ let insterAdclass = async (req, res, next) => {
 let queryCollege = async (req, res, next) => {
     try {
         let college = await basicInfoDao.queryCollege();
+        console.log(college)
         var responseData = [];
         if(college.code === 200) {
             college.data.map((item, index) => {    
@@ -104,6 +115,7 @@ let queryMajor= async (req, res, next) => {
     let collegeId = req.body.collegeId;
     try {
         let major = await basicInfoDao.queryMajorById(collegeId);
+        console.log(major)
         var responseData = [];
         if(major.code === 200) {
             major.data.map((item, index) => {   
@@ -132,6 +144,7 @@ let queryAdClass = async (req, res, next) => {
     let majorId = req.body.majorId;
     try {
         let classList = await basicInfoDao.queryAdClassById(majorId);
+        console.log(classList)
         var responseData = [];
         if(classList.code === 200) {
             classList.data.map((item, index) => {     
@@ -162,6 +175,7 @@ let updateStatus = async (req, res, next) => {
     let item = req.body.item;
     try {
         let statusPro = await basicInfoDao.updateStatus(type, status, item);
+        console.log(statusPro)
         if(statusPro.code === 200) {
             res.send({
                 code: 200,
@@ -183,11 +197,15 @@ let queryColSta = async (req, res, next) => {
     var collegeId = req.body.item.college_id;
     try {
         let statusPro = await basicInfoDao.queryColSta(collegeId);
-        res.send({
-            code: 200,
-            data: statusPro.data[0].status,
-            msg: 'success'
-        })
+        console.log(statusPro)
+        if(statusPro.code === 200) {
+            res.send({
+                code: 200,
+                data: statusPro.data[0].status,
+                msg: 'success'
+            })
+        }
+        
     }
     catch(err) {
         res.send({
@@ -204,15 +222,15 @@ let delAdclass = async (req, res, next) => {
     var adclassObj = req.body.adclassObj;
     try {
         let adclassPro = await basicInfoDao.delAdclass(adclassObj);
-
+        console.log(adclassPro)
         if(adclassPro.code === 200) {
-
+            res.send({
+                code: 200,
+                data: adclassPro,
+                msg: 'success'
+            })
         }
-        res.send({
-            code: 200,
-            data: adclassPro,
-            msg: 'success'
-        })
+        
     }
     catch(err) {
         res.send({
@@ -236,11 +254,15 @@ let addBasicInfo = async (req, res, next) => {
     }
     try {
         let addPro = await basicInfoDao.addBasicInfo(type, [value]);
-        res.send({
-            code: 200,
-            data: addPro.data,
-            msg: 'success'
-        })
+        console.log(addPro);
+        if(addPro.code === 200) {
+            res.send({
+                code: 200,
+                data: addPro.data,
+                msg: 'success'
+            })
+        }
+        
     }
     catch (err) {
         console.log(err);

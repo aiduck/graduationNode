@@ -36,9 +36,48 @@ let queryUserById = (userId) => {
 }
 
 let queryByFilter = (filter,startNum,size) => {
-    let strBase = 'select user_id, username, email, telno, address, user_type_name, status from userInfo where ';
-    strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
-    return queryHelper.queryPromise(strBase, null);
+   
+    return new Promise(async (resolve, reject) => {
+        await db.getConnection(async (err, connection) => {
+            if (err) {
+                resolve({
+                    code: 500,
+                    msg: '获取数据库链接失败'
+                })
+            }
+            else {
+                try {
+                    await connection.beginTransaction()
+                    let strBase = 'select user_id, username, email, telno, address, user_type_name, status from userInfo where ';
+                    strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
+                    let res1 = await queryHelper.queryPromise(strBase, null);
+                    
+                    let strBase2 = 'select count(*) as number from userInfo where ';
+                    strBase2 = strBase2 + util.obj2MySql(filter);
+                    let res2 = await queryHelper.queryPromise(strBase2, null);
+                    await connection.commit()
+                    connection.release()
+                    resolve({
+                        code: 200,
+                        data: res1.data,
+                        total:  res2.data[0].number,
+                        msg: '更改用户信息成功'
+                    })
+                }
+                catch (error) {
+                    console.log('出错了，准备回滚', error)
+                    await connection.rollback(() => {
+                        console.log('回滚成功')
+                        connection.release()
+                    });
+                    resolve({
+                        code: 500,
+                        msg: '更改用户信息失败'
+                    })
+                }
+            }
+        })
+    })
 }
 
 /**
@@ -234,36 +273,46 @@ let daleteUserList = (userList, teacherList, studentList) => {
             else {
                 try {
                     await connection.beginTransaction()
+                    let res1;
+                    let res2;
+                    let res3;
                     // 删除用户信息
-                    let sqlBase = `delete from userInfo where user_id in (`;
-                    userList.map((item, index) => {
-                        if(index < userList.length - 1) {
-                            sqlBase = sqlBase +'\'' +item + '\','
-                        } else {
-                            sqlBase = sqlBase + '\''+ item + '\');'
-                        }
-                    })
-                    let res1 = await queryHelper.queryPromise(sqlBase, null);
+                    if(userList.length > 0) {
+                        let sqlBase = `delete from userInfo where user_id in (`;
+                        userList.map((item, index) => {
+                            if(index < userList.length - 1) {
+                                sqlBase = sqlBase +'\'' +item + '\','
+                            } else {
+                                sqlBase = sqlBase + '\''+ item + '\');'
+                            }
+                        })
+                        res1 = await queryHelper.queryPromise(sqlBase, null);
+                    }
+                
                     // 删除教师信息
-                    let sqlBaseTea = `delete from teacher where user_id in (`;
-                    teacherList.map((item, index) => {
-                        if(index < teacherList.length - 1) {
-                            sqlBaseTea = sqlBaseTea +'\'' +item + '\','
-                        } else {
-                            sqlBaseTea = sqlBaseTea + '\''+ item + '\');'
-                        }
-                    })
-                    let res2 = await queryHelper.queryPromise(sqlBaseTea, null);
-                    // 删除学生信息
-                    let sqlBaseStu = `delete from student where user_id in (`;
-                    studentList.map((item, index) => {
-                        if(index < studentList.length - 1) {
-                            sqlBaseStu = sqlBaseStu +'\'' +item + '\','
-                        } else {
-                            sqlBaseStu = sqlBaseStu + '\''+ item + '\');'
-                        }
-                    })
-                    let res3 = await queryHelper.queryPromise(sqlBaseStu, null);
+                    if(teacherList.length > 0) {
+                        let sqlBaseTea = `delete from teacher where user_id in (`;
+                        teacherList.map((item, index) => {
+                            if(index < teacherList.length - 1) {
+                                sqlBaseTea = sqlBaseTea +'\'' +item + '\','
+                            } else {
+                                sqlBaseTea = sqlBaseTea + '\''+ item + '\');'
+                            }
+                        })
+                        res2 = await queryHelper.queryPromise(sqlBaseTea, null);
+                    }
+                    if(studentList > 0) {
+                        // 删除学生信息
+                        let sqlBaseStu = `delete from student where user_id in (`;
+                        studentList.map((item, index) => {
+                            if(index < studentList.length - 1) {
+                                sqlBaseStu = sqlBaseStu +'\'' +item + '\','
+                            } else {
+                                sqlBaseStu = sqlBaseStu + '\''+ item + '\');'
+                            }
+                        })
+                        res3 = await queryHelper.queryPromise(sqlBaseStu, null);
+                    }
                     await connection.commit()
                     connection.release()
                     resolve({

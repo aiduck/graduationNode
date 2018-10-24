@@ -39,20 +39,70 @@ let queryUserById = (userId) => {
  * @param {*筛选条件} filter 
  */
 let queryByFilter = (filter,startNum,size) => {
-    if(filter.user_id !== undefined) {
-        console.log(filter.user_id);
-        let user_id =  filter.user_id;
-        filter['teacher.user_id'] = user_id;
-        if(delete filter.user_id) {
-            let strBase = 'SELECT teacher.user_id, teacher.username, email, telno, address, user_type_name, status, sex, job_title, education FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
-            strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
-            return queryHelper.queryPromise(strBase, null);
-        }
-    } else {
-        let strBase = 'SELECT teacher.user_id, teacher.username, email, telno, address, user_type_name, status, sex, job_title, education FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
-        strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
-        return queryHelper.queryPromise(strBase, null);
-    }
+    return new Promise(async (resolve, reject) => {
+        await db.getConnection(async (err, connection) => {
+            if (err) {
+                resolve({
+                    code: 500,
+                    msg: '获取数据库链接失败'
+                })
+            }
+            else {
+                try {
+                    await connection.beginTransaction()
+                    let res1;
+                    let res2;
+                    if(filter.user_id !== undefined || filter.username !== undefined) {
+                        
+                        let user_id =  filter.user_id;
+                        let username = filter.username;
+                        filter['teacher.user_id'] = user_id;
+                        filter['teacher.username'] = username;
+                        let isdelId = delete filter.user_id;
+                        let isdelName = delete filter.username;
+                        if(isdelId || isdelName) {
+                            let strBase = 'SELECT teacher.user_id, teacher.username, email, telno, address, user_type_name, status, sex, job_title, education FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
+                            strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
+                            // return queryHelper.queryPromise(strBase, null);
+                            res1 = await queryHelper.queryPromise(strBase, null);
+
+                            let strBase2 = 'SELECT count(*) as number FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
+                            strBase2 = strBase2 + util.obj2MySql(filter);
+                            res2 = await queryHelper.queryPromise(strBase2, null);
+                        }
+                    } else {
+                        let strBase = 'SELECT teacher.user_id, teacher.username, email, telno, address, user_type_name, status, sex, job_title, education FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
+                        strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
+                        // return queryHelper.queryPromise(strBase, null);
+                        res1 = await queryHelper.queryPromise(strBase, null);
+
+                        let strBase2 = 'SELECT count(*) as number FROM teacher inner join userInfo on teacher.user_id = userInfo.user_id  WHERE ';
+                        strBase2 = strBase2 + util.obj2MySql(filter);
+                        res2 = await queryHelper.queryPromise(strBase2, null);
+                    }
+                    await connection.commit()
+                    connection.release()
+                    resolve({
+                        code: 200,
+                        data: res1.data,
+                        total: res2.data[0].number,
+                        msg: '更改用户信息成功'
+                    })
+                }
+                catch (error) {
+                    console.log('出错了，准备回滚', error)
+                    await connection.rollback(() => {
+                        console.log('回滚成功')
+                        connection.release()
+                    });
+                    resolve({
+                        code: 500,
+                        msg: '更改用户信息失败'
+                    })
+                }
+            }
+        })
+    })
    
 }
 

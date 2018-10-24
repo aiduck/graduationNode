@@ -22,10 +22,13 @@ let insertUserList = async (req, res, next) => {
     }
     try {
         let  user = await studentInfoDao.insertUserList(values,stuvalues);
-        res.send({
-            code: 200,
-            msg: 'success'
-        })
+        console.log(user)
+        if(user.code === 200) {
+            res.send({
+                code: 200,
+                msg: 'success'
+            })
+        }
     }
     catch (err) {
         res.send({
@@ -47,15 +50,19 @@ let queryLimitUser = async(req, res, next) => {
     try {
         let user = await studentInfoDao.queryLimitUser(startNum,size);
         let userNum = await studentInfoDao.queryNum();
-        let data = {
-            userList: user.data,
-            total: userNum.data[0].number
+        console.log(user);
+        console.log(userNum);
+        if(user.code === 200 && userNum.code === 200) {
+            let data = {
+                userList: user.data,
+                total: userNum.data[0].number
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
         }
-        res.send({
-            code: 200,
-            data: data,
-            msg: 'success'
-        })
     }
     catch (err) {
         console.log(err);
@@ -71,14 +78,17 @@ let queryLimitUser = async(req, res, next) => {
 let queryUser =  async(req, res, next) => {
     try {
         let teacher =  await studentInfoDao.query();
-        let data = {
-            userList: teacher.data
+        console.log(teacher);
+        if(teacher.code === 200) {
+            let data = {
+                userList: teacher.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
         }
-        res.send({
-            code: 200,
-            data: data,
-            msg: 'success'
-        })
     }
     catch (err) {
         console.log(err);
@@ -93,14 +103,18 @@ let queryUser =  async(req, res, next) => {
 let queryUserById  =  async(req, res, next) => {
     try {
         let userPro = await studentInfoDao.queryUserById(req.body.user_id);
-        let data = {
-            user: userPro.data
+        console.log(userPro);
+        if(userPro.code === 200) {
+            let data = {
+                user: userPro.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
         }
-        res.send({
-            code: 200,
-            data: data,
-            msg: 'success'
-        })
+        
     }
     catch(err) {
         console.log(err);
@@ -121,14 +135,19 @@ let queryByFilter = async(req, res, next) => {
     let size = pageSize * 1;
     try {
         let filterPro = await studentInfoDao.queryByFilter(filter,startNum,size);
-        let data = {
-            userList: filterPro.data
+        console.log(filterPro)
+        if(filterPro.code === 200){
+            let data = {
+                userList: filterPro.data,
+                total:  filterPro.total
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
         }
-        res.send({
-            code: 200,
-            data: data,
-            msg: 'success'
-        })
+        
     }
     catch(err) {
         console.log(err);
@@ -182,10 +201,12 @@ let daleteUserList = async(req, res, next) => {
     try {
         let deletePro = await studentInfoDao.daleteUserList(userList, studentList);
         console.log(deletePro)
-        res.send({
-            code: 200,
-            msg: 'success'
-        })
+        if(deletePro.code) {
+            res.send({
+                code: 200,
+                msg: 'success'
+            })
+        }
     }
     catch (err) {
         console.log(err);

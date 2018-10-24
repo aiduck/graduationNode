@@ -37,10 +37,13 @@ let insertUserList = async (req, res, next) => {
         } else {
             user = await userInfoDao.insertUserListOth(values,valuesOth,user_type_name);
         }
-        res.send({
-            code: 200,
-            msg: 'success'
-        })
+        console.log(user);
+        if(user.code === 200) {
+            res.send({
+                code: 200,
+                msg: 'success'
+            })
+        }
     }
     catch (err) {
         res.send({
@@ -62,15 +65,23 @@ let queryLimitUser = async(req, res, next) => {
     try {
         let user = await userInfoDao.queryLimitUser(startNum,size);
         let userNum = await userInfoDao.queryNum();
-        let data = {
-            userList: user.data,
-            total: userNum.data[0].number
+        // let data = {
+        //     userList: user.data,
+        //     total: userNum.data[0].number
+        // }
+        console.log(user);
+        console.log(userNum);
+        if(user.code === 200 && userNum.code === 200) {
+            let data = {
+                userList: user.data,
+                total: userNum.data[0].number
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
         }
-        res.send({
-            code: 200,
-            data: data,
-            msg: 'success'
-        })
     }
     catch (err) {
         console.log(err);
@@ -85,14 +96,17 @@ let queryLimitUser = async(req, res, next) => {
 let queryUser =  async(req, res, next) => {
     try {
         let user = await userInfoDao.query();
-        let data = {
-            userList: user.data
+        console.log(user);
+        if(user.code === 200) {
+            let data = {
+                userList: user.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
         }
-        res.send({
-            code: 200,
-            data: data,
-            msg: 'success'
-        })
     }
     catch (err) {
         console.log(err);
@@ -106,14 +120,17 @@ let queryUser =  async(req, res, next) => {
 let queryUserById  =  async(req, res, next) => {
     try {
         let userPro = await userInfoDao.queryUserById(req.body.user_id);
-        let data = {
-            user: userPro.data
+        console.log(userPro);
+        if(userPro.code === 200) {
+            let data = {
+                user: userPro.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
         }
-        res.send({
-            code: 200,
-            data: data,
-            msg: 'success'
-        })
     }
     catch(err) {
         console.log(err);
@@ -133,14 +150,18 @@ let queryByFilter = async(req, res, next) => {
     let size = pageSize * 1;
     try {
         let filterPro = await userInfoDao.queryByFilter(filter,startNum,size);
-        let data = {
-            userList: filterPro.data
+        console.log(filterPro);
+        if(filterPro.code === 200) {
+            let data = {
+                userList: filterPro.data,
+                total:  filterPro.total
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
         }
-        res.send({
-            code: 200,
-            data: data,
-            msg: 'success'
-        })
     }
     catch(err) {
         console.log(err);
@@ -155,11 +176,14 @@ let queryByFilter = async(req, res, next) => {
 let updatedStatus = async(req, res, next) => {
     try {
         let statusPro = await userInfoDao.updatedStatus(req.body.status, req.body.user_id);
-        res.send({
-            code: 200,
-            data: statusPro.data,
-            msg: 'success'
-        })
+        console.log(statusPro);
+        if(statusPro.code === 200) {
+            res.send({
+                code: 200,
+                data: statusPro.data,
+                msg: 'success'
+            })
+        }
     }
     catch (err) {
         console.log(err);
@@ -173,11 +197,15 @@ let updatedStatus = async(req, res, next) => {
 let updatePwc = async(req, res, next) => {
     try {
         let pwdPro = await userInfoDao.updatePwc(req.body.user_id);
-        res.send({
-            code: 200,
-            data: pwdPro.data,
-            msg: 'success'
-        })
+        console.log(pwdPro);
+        if(pwdPro.code === 200) {
+            res.send({
+                code: 200,
+                data: pwdPro.data,
+                msg: 'success'
+            })
+        }
+        
     }
     catch (err) {
         console.log(err);
@@ -199,11 +227,14 @@ let updateUserInfo = async(req, res, next) => {
     } = req.body.userForm;
     try {
         let userPro = await userInfoDao.updateUserInfo(username,email,telno,address,user_type_name,user_id);
-        res.send({
-            code: 200,
-            data: userPro.data,
-            msg: 'success'
-        })
+        console.log(userPro);
+        if(userPro.code === 200){
+            res.send({
+                code: 200,
+                data: userPro.data,
+                msg: 'success'
+            }) 
+        }
     }
     catch (err) {
         console.log(err);
@@ -222,10 +253,13 @@ let daleteUserList = async(req, res, next) => {
 
     try {
         let deletePro = await userInfoDao.daleteUserList(userList, teacherList, studentList);
-        res.send({
-            code: 200,
-            msg: 'success'
-        })
+        console.log(deletePro);
+        if(deletePro.code === 200) {
+            res.send({
+                code: 200,
+                msg: 'success'
+            })
+        }
     }
     catch (err) {
         console.log(err);
