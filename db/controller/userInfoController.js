@@ -12,7 +12,13 @@ let insertUserList = async (req, res, next) => {
     // 对于用户基本操作已经没有导入功能了
     if(userArr.constructor == Array) {
         userArr.map((item, index) => {
-            let value = [`${item.user_id}`,`${item.username}`,`${item.password}`,`${item.email}`,`${item.telno}`,`${item.address}`,`${item.user_type_name}`,`${item.status}`];
+            let status;
+            if(item.status === '可用') {
+                status = '可用'
+            } else {
+                status = '不可用'
+            }
+            let value = [`${item.user_id}`,`${item.username}`,`123456`,`${item.email}`,`${item.telno}`,`${item.address}`,`${item.user_type_name}`,`${status}`];
             let valueOth = [`${item.user_id}`,`${item.username}`];
             // 存入用户信息
             values.push(value);
@@ -24,7 +30,13 @@ let insertUserList = async (req, res, next) => {
         })
     } else {
         // 插入单个用户的操作
-        let value = [`${userArr.user_id}`,`${userArr.username}`,`123456`,`${userArr.email}`,`${userArr.telno}`,`${userArr.address}`,`${userArr.user_type_name}`,`${userArr.status}`];
+        let status;
+        if(userArr.status === '可用') {
+            status = '可用'
+        } else {
+            status = '不可用'
+        }
+        let value = [`${userArr.user_id}`,`${userArr.username}`,`123456`,`${userArr.email}`,`${userArr.telno}`,`${userArr.address}`,`${userArr.user_type_name}`,`${status}`];
         let valueOth = [`${userArr.user_id}`,`${userArr.username}`];
         user_type_name = userArr.user_type_name;
         values.push(value);
@@ -41,6 +53,7 @@ let insertUserList = async (req, res, next) => {
         if(user.code === 200) {
             res.send({
                 code: 200,
+                data: user.data,
                 msg: 'success'
             })
         }

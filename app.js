@@ -10,6 +10,7 @@ const basicInfoRouter = require('./routes/api/basicInfo')
 const userInfoRouter = require('./routes/api/userInfo')
 const teacherInfoRouter = require('./routes/api/teacherInfo')
 const studentInfoRouter = require('./routes/api/studentInfo')
+// const courseInfoRouter = require('./routes/api/courseInfo')
 
 var app = express();
 
@@ -29,6 +30,7 @@ app.use('/api/basicInfo',basicInfoRouter);
 app.use('/api/userInfo',userInfoRouter);
 app.use('/api/teacherInfo',teacherInfoRouter);
 app.use('/api/studentInfo',studentInfoRouter);
+// app.use('/api/courseInfo',courseInfoRouter);
 
 
 

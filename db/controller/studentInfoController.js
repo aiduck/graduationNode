@@ -8,13 +8,25 @@ let insertUserList = async (req, res, next) => {
     let stuvalues = [];
     if(userArr.constructor == Array) {
         userArr.map((item, index) => {
-            let value = [`${item.user_id}`,`${item.username}`,`${item.password}`,`${item.email}`,`${item.telno}`,`${item.address}`,`${item.user_type_name}`,`${item.status}`];
+            let status;
+            if(item.status === '可用') {
+                status = '可用'
+            } else {
+                status = '不可用'
+            }
+            let value = [`${item.user_id}`,`${item.username}`,`123456`,`${item.email}`,`${item.telno}`,`${item.address}`,`学生`,`${status}`];
             let stuValue = [`${item.user_id}`,`${item.username}`,`${item.college_id}`,`${item.major_id}`,`${item.aclass_id}`];
             values.push(value);
             stuvalues.push(stuValue);
         })
     } else {
-        let value = [`${userArr.user_id}`,`${userArr.username}`,`123456`,`${userArr.email}`,`${userArr.telno}`,`${userArr.address}`,`学生`,`${userArr.status}`];
+        let status;
+        if(userArr.status === '可用') {
+            status = '可用'
+        } else {
+            status = '不可用'
+        }
+        let value = [`${userArr.user_id}`,`${userArr.username}`,`123456`,`${userArr.email}`,`${userArr.telno}`,`${userArr.address}`,`学生`,`${status}`];
         let stuValue = [`${userArr.user_id}`,`${userArr.username}`,`${userArr.college_id}`,`${userArr.major_id}`,`${userArr.aclass_id}`];
         values.push(value);
         stuvalues.push(stuValue);

@@ -1,8 +1,7 @@
 
 const crypto = require('crypto')
 const id = {
-    collegeId: '1',
-    majorId: '2',
+    majorId: '1',
 }
 /**
  * 字符串转数组

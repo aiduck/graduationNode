@@ -6,7 +6,12 @@ let insterCollege = async (req, res, next) => {
     let collegeArr = req.body;
     let values = [];
     collegeArr.map((item, index) => {
-        let value = [`${item.college_id}`,`${item.status}`];
+        if(item.status === '可用') {
+            status = '可用'
+        } else {
+            status = '不可用'
+        }
+        let value = [`${item.college_id}`,`${status}`];
         values.push(value);
     })
     try {
@@ -32,7 +37,12 @@ let insterMajor = async (req, res, next) => {
     let majorArr = req.body;
     let values = [];
     majorArr.map((item, index) => {
-        let value = [`${item.major_id}`,`${item.college_id}`,`${item.status}`];
+        if(item.status === '可用') {
+            status = '可用'
+        } else {
+            status = '不可用'
+        }
+        let value = [`${item.major_id}`,`${item.college_id}`,`${status}`];
         values.push(value);
     })
     try {

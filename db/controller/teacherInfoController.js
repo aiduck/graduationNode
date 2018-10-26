@@ -9,19 +9,30 @@ let insertUserList = async (req, res, next) => {
   
     if(userArr.constructor == Array) {
         userArr.map((item, index) => {
-            let value = [`${item.user_id}`,`${item.username}`,`${item.password}`,`${item.email}`,`${item.telno}`,`${item.address}`,`${item.user_type_name}`,`${item.status}`];
+            let status;
+           
+            if(item.status === '可用') {
+                status = '可用'
+            } else {
+                status = '不可用'
+            }
+            let value = [`${item.user_id}`,`${item.username}`,`123456`,`${item.email}`,`${item.telno}`,`${item.address}`,`教师`,`${status}`];
             let teaValue = [`${item.user_id}`,`${item.username}`,`${item.sex}`,`${item.job_title}`,`${item.education}`];
             values.push(value);
             teavalues.push(teaValue);
          
         })
     } else {
-        let value = [`${userArr.user_id}`,`${userArr.username}`,`123456`,`${userArr.email}`,`${userArr.telno}`,`${userArr.address}`,`教师`,`${userArr.status}`];
+        let status;
+        if(userArr.status === '可用') {
+            status = '可用'
+        } else {
+            status = '不可用'
+        }
+        let value = [`${userArr.user_id}`,`${userArr.username}`,`123456`,`${userArr.email}`,`${userArr.telno}`,`${userArr.address}`,`教师`,`${status}`];
         let teaValue = [`${userArr.user_id}`,`${userArr.username}`,`${userArr.sex}`,`${userArr.job_title}`,`${userArr.education}`];
         values.push(value);
         teavalues.push(teaValue);
-
-
     }
     try {
         let  user = await teacherInfoDao.insertUserList(values,teavalues);

@@ -227,15 +227,24 @@ let insertUserListTeaStu = (values, valuesTea, valuesStu) => {
                     let sql = SQL.UserSQL.insert;
                     let res1 = await queryHelper.queryPromise(sql, [values]);
                     // 插入教师信息
-                    let sqltea = SQL.UserSQL.insertTea;
-                    let res2 = await queryHelper.queryPromise(sqltea, [valuesTea]);
-                    // 插入学生信息
-                    let sqlstu = SQL.UserSQL.insertStu;
-                    let res3 = await queryHelper.queryPromise(sqlstu, [valuesStu]);
+                    if(valuesTea.length > 0) {
+                        let sqltea = SQL.UserSQL.insertTea;
+                        let res2 = await queryHelper.queryPromise(sqltea, [valuesTea]);
+                    }
+                    if(valuesStu.length > 0) {
+                        // 插入学生信息
+                        let sqlstu = SQL.UserSQL.insertStu;
+                        let res3 = await queryHelper.queryPromise(sqlstu, [valuesStu]);
+                    }
+                    console.log(res1)
+                    // console.log(res2)
+                    // console.log(res3)
+                    
                     await connection.commit()
                     connection.release()
                     resolve({
                         code: 200,
+                        data: res1,
                         msg: '批量插入用户信息成功'
                     })
                 }
