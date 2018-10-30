@@ -12,7 +12,7 @@ let insterCourse = async (req, res, next) => {
     } else {
         status = '不可用'
     }
-    let value = [`${course.course_id}`,`${course.course_name}`,`${course.year}`,`${course.term}`,`${course.hours}`,
+    let value = [`${course.course_id}`,`${course.course_name}`,`${course.year}`,`${course.term}`,`${course.hours}`,`${course.grade}`,
     `${course.college_id}`,`${course.major_id}`,`${course.ratio_usual}`,`${course.ratio_project}`,`${status}`];
     values.push(value);
     try {
@@ -150,13 +150,14 @@ let updateCourseInfo = async(req, res, next) => {
         year,
         term,
         hours,
+        grade,
         college_id,
         major_id,
         ratio_usual,
         ratio_project,
     } = req.body.form;
     try {
-        let coursePro = await courseInfoDao.updateCourseInfo(course_name,year,term,hours,college_id,major_id,ratio_usual,ratio_project,course_id);
+        let coursePro = await courseInfoDao.updateCourseInfo(course_name,year,term,hours,grade,college_id,major_id,ratio_usual,ratio_project,course_id);
         console.log(coursePro);
         if(coursePro.code === 200){
             res.send({

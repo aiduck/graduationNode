@@ -139,15 +139,16 @@ let queryCourseById = (courseId) => {
  * @param {*} year 
  * @param {*} term 
  * @param {*} hours 
+ * @param {*} grade 
  * @param {*} college_id 
  * @param {*} major_id 
  * @param {*} ratio_usual 
  * @param {*} ratio_project 
  * @param {*} course_id 
  */
-let updateCourseInfo = (course_name,year,term,hours,college_id,major_id,ratio_usual,ratio_project,course_id) => {
+let updateCourseInfo = (course_name,year,term,hours,grade,college_id,major_id,ratio_usual,ratio_project,course_id) => {
   let sql = SQL.CourseSQL.updateCourseInfo;
-  return queryHelper.queryPromise(sql, [course_name,year,term,hours,college_id,major_id,ratio_usual,ratio_project,course_id]);
+  return queryHelper.queryPromise(sql, [course_name,year,term,hours,grade,college_id,major_id,ratio_usual,ratio_project,course_id]);
 }
 
 /**
