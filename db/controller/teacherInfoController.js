@@ -138,6 +138,33 @@ let queryUserById  =  async(req, res, next) => {
     }
 }
 
+// 班级信息中的获取教师姓名
+let queryByIdForName = async(req, res, next) => {
+
+    try {
+        let userPro = await teacherInfoDao.queryByIdForName(req.body.user_id);
+        console.log(userPro);
+        if(userPro.code === 200) {
+            let data = {
+                user: userPro.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
+
+
 // 根据筛选条件筛选信息 obj2MySql
 let queryByFilter = async(req, res, next) => {
 
@@ -237,7 +264,8 @@ let controller = {
     queryUser,
     queryUserById,
     queryByFilter,
-
+    queryByIdForName,
+    
     insertUserList,
 
     updateUserInfo,

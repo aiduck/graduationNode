@@ -7,6 +7,8 @@ const controller = require('../../db/controller/teacherInfoController');
 router.get('/queryLimitUser', controller.queryLimitUser); 
 router.get('/queryUser', controller.queryUser);  
 router.post('/queryUserById', controller.queryUserById); 
+// 班级信息中的获取教师姓名
+router.post('/queryByIdForName', controller.queryByIdForName); 
 
 
 router.post('/queryByFilter', controller.queryByFilter); 

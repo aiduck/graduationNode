@@ -142,6 +142,30 @@ let queryCourseById = async(req, res, next) => {
         })
     }
 }
+//  班级信息中的获取课程名称
+let queryByIdForName = async(req, res, next) => {
+    try {
+        let coursePro = await courseInfoDao.queryByIdForName(req.body.course_id);
+        console.log(coursePro);
+        if(coursePro.code === 200) {
+            let data = {
+                course: coursePro.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
 
 let updateCourseInfo = async(req, res, next) => {
     let {
@@ -206,6 +230,7 @@ let controller = {
     queryByFilter,
     queryCourseById,
     updateCourseInfo,
-    daleteCourseList
+    daleteCourseList,
+    queryByIdForName
 }
 module.exports = controller

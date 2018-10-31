@@ -15,6 +15,8 @@ router.post('/queryByFilter', controller.queryByFilter);
 
 // 获取课程
 router.post('/queryCourseById', controller.queryCourseById);
+//  班级信息中的获取课程名称
+router.post('/queryByIdForName', controller.queryByIdForName);
 // 更新课程信息
 router.post('/updateCourseInfo', controller.updateCourseInfo);
 

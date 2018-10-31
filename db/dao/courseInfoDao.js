@@ -134,6 +134,16 @@ let queryCourseById = (courseId) => {
 }
 
 /**
+ * 班级信息中的获取课程名称
+ * @param {*} courseId 
+ */
+let queryByIdForName = (courseId) => {
+  let sql = SQL.CourseSQL.queryByIdForName;
+  
+  return queryHelper.queryPromise(sql, courseId);
+}
+
+/**
  * 更新课程
  * @param {*} course_name 
  * @param {*} year 
@@ -172,6 +182,7 @@ let Dao = {
   updateCourseStatus,
   queryByFilter,
   queryCourseById,
+  queryByIdForName,
   updateCourseInfo,
   daleteCourseList
 }

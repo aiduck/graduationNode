@@ -106,6 +106,15 @@ let queryByFilter = (filter,startNum,size) => {
    
 }
 
+/**
+ * 班级信息中的获取教师姓名
+ * @param {*} user_id 
+ */
+let queryByIdForName = (userId) => {
+    let sql = SQL.UserSQL.queryByIdForName;
+    return queryHelper.queryPromise(sql, userId);
+}
+
 
 /**
  * 更新教师用户信息
@@ -276,6 +285,7 @@ let Dao = {
 
     queryUserById,
     queryByFilter,
+    queryByIdForName,
 
     
 
