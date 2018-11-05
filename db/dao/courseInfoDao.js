@@ -23,7 +23,8 @@ let queryLimitCourse = (startNum, size) => {
     await db.getConnection(async (err, connection) => {
       if (err) {
         resolve({
-          code: 500,
+          code: 501,
+          err: err,
           msg: '获取数据库链接失败'
         })
       }
@@ -32,29 +33,31 @@ let queryLimitCourse = (startNum, size) => {
           await connection.beginTransaction()
           
           let sql1 = SQL.CourseSQL.queryLimit;
-          let res1 = await queryHelper.queryPromise(sql1, [startNum, size]);
+          let res1 = await queryHelper.queryPromise(sql1, [startNum, size],connection);
           // 更新学院下面的专业状态
           let sql2 = SQL.CourseSQL.queryNum;
-          let res2 = await queryHelper.queryPromise(sql2, null);
+          let res2 = await queryHelper.queryPromise(sql2, null,connection);
         
           await connection.commit()
           connection.release()
           resolve({
             code: 200,
+            msg: '查询成功',
             data: res1.data,
             number: res2.data[0].number,
-            msg: '查询成功'
+            
           })
         }
-        catch (error) {
-          console.log('出错了，准备回滚', error)
+        catch (err) {
+          console.log('出错了，准备回滚', err)
           await connection.rollback(() => {
             console.log('回滚成功')
             connection.release()
           });
           resolve({
             code: 500,
-            msg: '查询失败'
+            err: err,
+            msg: '数据库操作失败'
           })
         }
       }
@@ -85,7 +88,8 @@ let queryByFilter = (filter,startNum,size) => {
     await db.getConnection(async (err, connection) => {
         if (err) {
             resolve({
-                code: 500,
+                code: 501,
+                err: err,
                 msg: '获取数据库链接失败'
             })
         }
@@ -94,29 +98,31 @@ let queryByFilter = (filter,startNum,size) => {
                 await connection.beginTransaction()
                 let strBase = 'select * from course where ';
                 strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
-                let res1 = await queryHelper.queryPromise(strBase, null);
+                let res1 = await queryHelper.queryPromise(strBase, null,connection);
                 
                 let strBase2 = 'select count(*) as number from course where ';
                 strBase2 = strBase2 + util.obj2MySql(filter);
-                let res2 = await queryHelper.queryPromise(strBase2, null);
+                let res2 = await queryHelper.queryPromise(strBase2, null,connection);
                 await connection.commit()
                 connection.release()
                 resolve({
                     code: 200,
+                    msg: '更改用户信息成功',
                     data: res1.data,
                     total:  res2.data[0].number,
-                    msg: '更改用户信息成功'
+                    
                 })
             }
-            catch (error) {
-                console.log('出错了，准备回滚', error)
+            catch (err) {
+                console.log('出错了，准备回滚', err)
                 await connection.rollback(() => {
                     console.log('回滚成功')
                     connection.release()
                 });
                 resolve({
                     code: 500,
-                    msg: '更改用户信息失败'
+                    err: err,
+                    msg: '数据库操作失败'
                 })
             }
         }

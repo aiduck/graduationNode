@@ -78,7 +78,8 @@ let updateStatus = (type,status,item) => {
             await db.getConnection(async (err, connection) => {
               if (err) {
                 resolve({
-                  code: 500,
+                  code: 501,
+                  err: err,
                   msg: '获取数据库链接失败'
                 })
               }
@@ -88,10 +89,10 @@ let updateStatus = (type,status,item) => {
                   // 更新学院状态
                   let id = item.college_id;
                   let sql1 = SQL.StatueSQL.updateColStatue;
-                  let res1 = await queryHelper.queryPromise(sql1, [status, id]);
+                  let res1 = await queryHelper.queryPromise(sql1, [status, id],connection);
                   // 更新学院下面的专业状态
                   let sql2 = SQL.StatueSQL.updateAllMajSta;
-                  let res2 = await queryHelper.queryPromise(sql2, [status, id]);
+                  let res2 = await queryHelper.queryPromise(sql2, [status, id],connection);
                   await connection.commit()
                   connection.release()
                   resolve({
@@ -99,15 +100,16 @@ let updateStatus = (type,status,item) => {
                     msg: '更新学院以及下面的专业状态成功'
                   })
                 }
-                catch (error) {
-                  console.log('出错了，准备回滚', error)
+                catch (err) {
+                  console.log('出错了，准备回滚', err)
                   await connection.rollback(() => {
                     console.log('回滚成功')
                     connection.release()
                   });
                   resolve({
                     code: 500,
-                    msg: '更新学院以及下面的专业状态失败'
+                    err: err,
+                    msg: '数据库操作失败'
                   })
                 }
               }

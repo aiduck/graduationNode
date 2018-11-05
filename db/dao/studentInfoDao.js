@@ -43,7 +43,8 @@ let queryByFilter = (filter,startNum,size) => {
         await db.getConnection(async (err, connection) => {
             if (err) {
                 resolve({
-                    code: 500,
+                    code: 501,
+                    err: err,
                     msg: '获取数据库链接失败'
                 })
             }
@@ -63,47 +64,41 @@ let queryByFilter = (filter,startNum,size) => {
                         if(isdelId || isdelName) {
                             let strBase = 'SELECT student.user_id, student.username, email, telno, address, user_type_name, status, college_id,major_id,aclass_id FROM student inner join userInfo on student.user_id = userInfo.user_id  WHERE ';
                             strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
-                            res1 = await queryHelper.queryPromise(strBase, null);
+                            res1 = await queryHelper.queryPromise(strBase, null,connection);
 
                             let strBase2 = 'SELECT count(*) as number FROM student inner join userInfo on student.user_id = userInfo.user_id  WHERE ';
                             strBase2 = strBase2 + util.obj2MySql(filter);
-                            res2 = await queryHelper.queryPromise(strBase2, null);
+                            res2 = await queryHelper.queryPromise(strBase2, null,connection);
                         }
                     } else {
                         let strBase = 'SELECT student.user_id, student.username, email, telno, address, user_type_name, status, college_id,major_id,aclass_id FROM student inner join userInfo on student.user_id = userInfo.user_id  WHERE ';
                         strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
-                        res1 = await queryHelper.queryPromise(strBase, null);
+                        res1 = await queryHelper.queryPromise(strBase, null,connection);
 
                         let strBase2 = 'SELECT count(*) as number FROM student inner join userInfo on student.user_id = userInfo.user_id  WHERE ';
                         strBase2 = strBase2 + util.obj2MySql(filter);
-                        res2 = await queryHelper.queryPromise(strBase2, null);
+                        res2 = await queryHelper.queryPromise(strBase2, null,connection);
                     }
-
-                    // let strBase = 'select user_id, username, email, telno, address, user_type_name, status from userInfo where ';
-                    // strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
-                    // let res1 = await queryHelper.queryPromise(strBase, null);
-                    
-                    // let strBase2 = 'select count(*) as number from userInfo where ';
-                    // strBase2 = strBase2 + util.obj2MySql(filter);
-                    // let res2 = await queryHelper.queryPromise(strBase2, null);
                     await connection.commit()
                     connection.release()
                     resolve({
                         code: 200,
+                        msg: '更改用户信息成功',
                         data: res1.data,
                         total:  res2.data[0].number,
-                        msg: '更改用户信息成功'
+                        
                     })
                 }
-                catch (error) {
-                    console.log('出错了，准备回滚', error)
+                catch (err) {
+                    console.log('出错了，准备回滚', err)
                     await connection.rollback(() => {
                         console.log('回滚成功')
                         connection.release()
                     });
                     resolve({
                         code: 500,
-                        msg: '更改用户信息失败'
+                        err: err,
+                        msg: '数据库操作失败'
                     })
                 }
             }
@@ -127,7 +122,8 @@ let updateUserInfo = (username, email, telno, address, user_type_name, college_i
         await db.getConnection(async (err, connection) => {
             if (err) {
                 resolve({
-                    code: 500,
+                    code: 501,
+                    err: err,
                     msg: '获取数据库链接失败'
                 })
             }
@@ -136,9 +132,9 @@ let updateUserInfo = (username, email, telno, address, user_type_name, college_i
                     await connection.beginTransaction()
 
                     let sql1 = SQL.UserSQL.updateStuInfo;
-                    let res1 = await queryHelper.queryPromise(sql1, [username, college_id,major_id,aclass_id, user_id]);
+                    let res1 = await queryHelper.queryPromise(sql1, [username, college_id,major_id,aclass_id, user_id],connection);
                     let sql2 = SQL.UserSQL.updateUserInfo;
-                    let res2 = await queryHelper.queryPromise(sql2,[username, email, telno, address, user_id])
+                    let res2 = await queryHelper.queryPromise(sql2,[username, email, telno, address, user_id],connection)
                     
                     await connection.commit()
                     connection.release()
@@ -147,15 +143,16 @@ let updateUserInfo = (username, email, telno, address, user_type_name, college_i
                         msg: '更改用户信息成功'
                     })
                 }
-                catch (error) {
-                    console.log('出错了，准备回滚', error)
+                catch (err) {
+                    console.log('出错了，准备回滚', err)
                     await connection.rollback(() => {
                         console.log('回滚成功')
                         connection.release()
                     });
                     resolve({
                         code: 500,
-                        msg: '更改用户信息失败'
+                        err: err,
+                        msg: '数据库操作失败'
                     })
                 }
             }
@@ -173,7 +170,8 @@ let insertUserList = (values, stuvalues) => {
         await db.getConnection(async (err, connection) => {
             if (err) {
                 resolve({
-                    code: 500,
+                    code: 501,
+                    err: err,
                     msg: '获取数据库链接失败'
                 })
             }
@@ -182,10 +180,10 @@ let insertUserList = (values, stuvalues) => {
                     await connection.beginTransaction()
                     // 插入学生信息
                     let sql1 = SQL.UserSQL.insert;
-                    let res1 = await queryHelper.queryPromise(sql1, [stuvalues]);
+                    let res1 = await queryHelper.queryPromise(sql1, [stuvalues],connection);
                     // 插入用户信息
                     let sql2 = SQL.UserSQL.insertUser;
-                    let res2 = await queryHelper.queryPromise(sql2, [values]);    
+                    let res2 = await queryHelper.queryPromise(sql2, [values],connection);    
                     await connection.commit()
                     connection.release()
                     resolve({
@@ -193,15 +191,16 @@ let insertUserList = (values, stuvalues) => {
                         msg: '插入用户信息成功'
                     })
                 }
-                catch (error) {
-                    console.log('出错了，准备回滚', error)
+                catch (err) {
+                    console.log('出错了，准备回滚', err)
                     await connection.rollback(() => {
                         console.log('回滚成功')
                         connection.release()
                     });
                     resolve({
                         code: 500,
-                        msg: '插入用户信息失败'
+                        err: err,
+                        msg: '数据库操作失败'
                     })
                 }
             }
@@ -219,23 +218,14 @@ let daleteUserList = (userList, studentList) => {
         await db.getConnection(async (err, connection) => {
             if (err) {
                 resolve({
-                    code: 500,
+                    code: 501,
+                    err: err,
                     msg: '获取数据库链接失败'
                 })
             }
             else {
                 try {
                     await connection.beginTransaction()
-                    // 删除用户信息
-                    let sqlBase = `delete from userInfo where user_id in (`;
-                    userList.map((item, index) => {
-                        if(index < userList.length - 1) {
-                            sqlBase = sqlBase +'\'' +item + '\','
-                        } else {
-                            sqlBase = sqlBase + '\''+ item + '\');'
-                        }
-                    })
-                    let res1 = await queryHelper.queryPromise(sqlBase, null);
                     // 删除教师信息
                     let sqlBaseStu = `delete from student where user_id in (`;
                     studentList.map((item, index) => {
@@ -245,8 +235,19 @@ let daleteUserList = (userList, studentList) => {
                             sqlBaseStu = sqlBaseStu + '\''+ item + '\');'
                         }
                     })
-                    let res2 = await queryHelper.queryPromise(sqlBaseStu, null);
-                    console.log(res2);
+                    let res2 = await queryHelper.queryPromise(sqlBaseStu, null,connection);
+                    
+                    // 删除用户信息
+                    let sqlBase = `delete from userInfo where user_id in (`;
+                    userList.map((item, index) => {
+                        if(index < userList.length - 1) {
+                            sqlBase = sqlBase +'\'' +item + '\','
+                        } else {
+                            sqlBase = sqlBase + '\''+ item + '\');'
+                        }
+                    })
+                    let res1 = await queryHelper.queryPromise(sqlBase, null,connection);
+
                     await connection.commit()
                     connection.release()
                     resolve({
@@ -254,20 +255,31 @@ let daleteUserList = (userList, studentList) => {
                         msg: '批量删除用户信息成功'
                     })
                 }
-                catch (error) {
-                    console.log('出错了，准备回滚', error)
+                catch (err) {
+                    console.log('出错了，准备回滚', err)
                     await connection.rollback(() => {
                         console.log('回滚成功')
                         connection.release()
                     });
                     resolve({
                         code: 500,
-                        msg: '批量删除用户信息失败'
+                        err: err,
+                        msg: '数据库操作失败'
                     })
                 }
             }
         })
     })
+}
+
+/**
+ * 导出筛选
+ * @param {*} filter 
+ */
+let queryAllFilter = (filter) => {
+    let strBase = 'SELECT student.user_id, student.username, email, telno, address, user_type_name, status, college_id,major_id,aclass_id FROM student inner join userInfo on student.user_id = userInfo.user_id where ';
+    strBase = strBase + util.obj2MySql(filter);
+    return queryHelper.queryPromise(strBase, null);
 }
 
 let Dao = {
@@ -286,5 +298,6 @@ let Dao = {
     updateUserInfo,
 
     daleteUserList,
+    queryAllFilter
 }
 module.exports = Dao

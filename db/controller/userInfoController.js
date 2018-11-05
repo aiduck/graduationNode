@@ -56,6 +56,11 @@ let insertUserList = async (req, res, next) => {
                 data: user.data,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -94,6 +99,11 @@ let queryLimitUser = async(req, res, next) => {
                 data: data,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -119,6 +129,11 @@ let queryUser =  async(req, res, next) => {
                 data: data,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -142,6 +157,11 @@ let queryUserById  =  async(req, res, next) => {
                 code: 200,
                 data: data,
                 msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
             })
         }
     }
@@ -174,6 +194,11 @@ let queryByFilter = async(req, res, next) => {
                 data: data,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch(err) {
@@ -196,6 +221,11 @@ let updatedStatus = async(req, res, next) => {
                 data: statusPro.data,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -216,6 +246,11 @@ let updatePwc = async(req, res, next) => {
                 code: 200,
                 data: pwdPro.data,
                 msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
             })
         }
         
@@ -247,6 +282,11 @@ let updateUserInfo = async(req, res, next) => {
                 data: userPro.data,
                 msg: 'success'
             }) 
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -272,6 +312,11 @@ let daleteUserList = async(req, res, next) => {
                 code: 200,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -283,7 +328,36 @@ let daleteUserList = async(req, res, next) => {
     }
 }
 
-
+// 导出筛选
+let queryAllFilter = async(req, res, next) => {
+    let filter = req.body.filter;
+    try {
+        let filterPro = await userInfoDao.queryAllFilter(filter);
+        console.log(filterPro);
+        if(filterPro.code === 200) {
+            let data = {
+                allList: filterPro.data,
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
 
 let controller = {
     queryLimitUser,
@@ -298,5 +372,6 @@ let controller = {
     updateUserInfo,
 
     daleteUserList,
+    queryAllFilter
 }
 module.exports = controller

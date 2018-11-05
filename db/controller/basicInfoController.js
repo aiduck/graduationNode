@@ -23,6 +23,11 @@ let insterCollege = async (req, res, next) => {
                 data: college.data,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -54,6 +59,11 @@ let insterMajor = async (req, res, next) => {
                 data: major.data,
                 msg: 'success'
             });
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -81,6 +91,11 @@ let insterAdclass = async (req, res, next) => {
                 data: adclass.data,
                 msg: 'success'
             });
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
        
     }
@@ -106,12 +121,19 @@ let queryCollege = async (req, res, next) => {
                     status: item.status
                 });
             });
+        } 
+        if(college.code === 200) {
+            res.send({
+                code: 200,
+                data: responseData,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
-        res.send({
-            code: 200,
-            data: responseData,
-            msg: 'success'
-        })
     }
     catch (err) {
         res.send({
@@ -136,11 +158,19 @@ let queryMajor= async (req, res, next) => {
                 });
             });
         }
-        res.send({
-            code: 200,
-            data: responseData,
-            msg: 'success'
-        })
+        if(major.code === 200) {
+            res.send({
+                code: 200,
+                data: responseData,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+        
     }
     catch (err) {
         res.send({
@@ -164,11 +194,19 @@ let queryAdClass = async (req, res, next) => {
                 });
             });
         }
-        res.send({
-            code: 200,
-            data: responseData,
-            msg: 'success'
-        })
+        if(classList.code === 200) {
+            res.send({
+                code: 200,
+                data: responseData,
+                msg: 'success'
+            })
+        }  else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+        
     }
     catch (err) {
         res.send({
@@ -192,7 +230,12 @@ let updateStatus = async (req, res, next) => {
                 data: statusPro.data,
                 msg: 'update success'
             })
-        } 
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
     }
     catch(err) {
         res.send({
@@ -213,6 +256,11 @@ let queryColSta = async (req, res, next) => {
                 code: 200,
                 data: statusPro.data[0].status,
                 msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
             })
         }
         
@@ -238,6 +286,11 @@ let delAdclass = async (req, res, next) => {
                 code: 200,
                 data: adclassPro,
                 msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
             })
         }
         
@@ -270,6 +323,11 @@ let addBasicInfo = async (req, res, next) => {
                 code: 200,
                 data: addPro.data,
                 msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
             })
         }
         

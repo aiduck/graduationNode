@@ -23,7 +23,8 @@ let queryLimitClass = (startNum, size) => {
     await db.getConnection(async (err, connection) => {
       if (err) {
         resolve({
-          code: 500,
+          code: 501,
+          err: err,
           msg: '获取数据库链接失败'
         })
       }
@@ -32,40 +33,30 @@ let queryLimitClass = (startNum, size) => {
           await connection.beginTransaction()
           // 内容
           let sql1 = SQL.ClassSQL.queryLimit;
-          let res1 = await queryHelper.queryPromise(sql1, [startNum, size]);
+          let res1 = await queryHelper.queryPromise(sql1, [startNum, size],connection);
           // 数量
           let sql2 = SQL.ClassSQL.queryNum;
-          let res2 = await queryHelper.queryPromise(sql2, null);
-          // // 教师内容
-          // let sql3 = 'select * from teacher where user_id = ?'
-          // let res3 = await queryHelper.queryPromise(sql3, user_id);
-          // // 课程内容
-          // let sql4 = 'select * from course where course_id = ?'
-          // let res4 = await queryHelper.queryPromise(sql4, course_id);
-
-          // let data = {
-          //   ...res1.data,
-          //   ...res3.data,
-          //   ...res4.data,
-          // }
+          let res2 = await queryHelper.queryPromise(sql2, null,connection);
           await connection.commit()
           connection.release()
           resolve({
             code: 200,
+            msg: '查询成功',
             data: res1.data,
             number: res2.data[0].number,
-            msg: '查询成功'
+            
           })
         }
-        catch (error) {
-          console.log('出错了，准备回滚', error)
+        catch (err) {
+          console.log('出错了，准备回滚', err)
           await connection.rollback(() => {
             console.log('回滚成功')
             connection.release()
           });
           resolve({
-            code: 500,
-            msg: '查询失败'
+            code: 500, 
+            err: err,
+            msg: '数据库操作失败'
           })
         }
       }
@@ -93,7 +84,8 @@ let queryById = (class_id) => {
     await db.getConnection(async (err, connection) => {
       if (err) {
         resolve({
-          code: 500,
+          code: 501,
+          err: err,
           msg: '获取数据库链接失败'
         })
       }
@@ -102,14 +94,14 @@ let queryById = (class_id) => {
           await connection.beginTransaction()
           // 内容
           let sql1 = SQL.ClassSQL.queryById;
-          let res1 = await queryHelper.queryPromise(sql1, class_id);
+          let res1 = await queryHelper.queryPromise(sql1, class_id,connection);
           console.log(res1);
           // 教师内容
           let sql2 = 'select * from teacher where user_id = ?'
-          let res2 = await queryHelper.queryPromise(sql2, res1.data[0].user_id);
+          let res2 = await queryHelper.queryPromise(sql2, res1.data[0].user_id,connection);
           // 课程内容
           let sql3 = 'select * from course where course_id = ?'
-          let res3 = await queryHelper.queryPromise(sql3, res1.data[0].course_id);
+          let res3 = await queryHelper.queryPromise(sql3, res1.data[0].course_id,connection);
 
           let _class = {
             ...res1.data
@@ -129,19 +121,21 @@ let queryById = (class_id) => {
           connection.release()
           resolve({
             code: 200,
+            msg: '查询成功',
             data: data,
-            msg: '查询成功'
+            
           })
         }
-        catch (error) {
-          console.log('出错了，准备回滚', error)
+        catch (err) {
+          console.log('出错了，准备回滚', err)
           await connection.rollback(() => {
             console.log('回滚成功')
             connection.release()
           });
           resolve({
             code: 500,
-            msg: '查询失败'
+            err: err,
+            msg: '数据库操作失败'
           })
         }
       }
@@ -173,7 +167,8 @@ let queryByFilter = (filter,startNum,size) => {
     await db.getConnection(async (err, connection) => {
         if (err) {
             resolve({
-                code: 500,
+                code: 501,
+                err: err,
                 msg: '获取数据库链接失败'
             })
         }
@@ -182,29 +177,31 @@ let queryByFilter = (filter,startNum,size) => {
                 await connection.beginTransaction()
                 let strBase = 'select * from classes where ';
                 strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
-                let res1 = await queryHelper.queryPromise(strBase, null);
+                let res1 = await queryHelper.queryPromise(strBase, null,connection);
                 
                 let strBase2 = 'select count(*) as number from classes where ';
                 strBase2 = strBase2 + util.obj2MySql(filter);
-                let res2 = await queryHelper.queryPromise(strBase2, null);
+                let res2 = await queryHelper.queryPromise(strBase2, null,connection);
                 await connection.commit()
                 connection.release()
                 resolve({
                     code: 200,
+                    msg: '更改用户信息成功',
                     data: res1.data,
                     total:  res2.data[0].number,
-                    msg: '更改用户信息成功'
+                  
                 })
             }
-            catch (error) {
-                console.log('出错了，准备回滚', error)
+            catch (err) {
+                console.log('出错了，准备回滚', err)
                 await connection.rollback(() => {
                     console.log('回滚成功')
                     connection.release()
                 });
                 resolve({
                     code: 500,
-                    msg: '更改用户信息失败'
+                    err: err,
+                    msg: '数据库操作失败'
                 })
             }
         }
@@ -212,7 +209,10 @@ let queryByFilter = (filter,startNum,size) => {
 })
 }
 
-
+/**
+ * 删除信息
+ * @param {*} classIdList 
+ */
 let daleteClassList = (classIdList) => {
   let sqlBase = `delete from classes where class_id in (`;
   classIdList.map((item, index) => {
@@ -226,6 +226,156 @@ let daleteClassList = (classIdList) => {
 }
 
 
+/**
+ * 批量插入班级成员
+ * @param {*} values 
+ */
+let insterClassMemeber = (values) => {
+  let sql = SQL.ClassSQL.insertMember;
+  return queryHelper.queryPromise(sql, [values]);
+}
+
+/**
+ * 查询班级成员表格信息
+ * @param {*} startNum 
+ * @param {*} size 
+ */
+let queryLimitClassMemeber = (startNum, size) => {
+
+  return new Promise(async (resolve, reject) => {
+    await db.getConnection(async (err, connection) => {
+      if (err) {
+        resolve({
+          code: 501,
+          err: err,
+          msg: '获取数据库链接失败'
+        })
+      }
+      else {
+        try {
+          await connection.beginTransaction()
+          
+          let sql1 = SQL.ClassSQL.queryLimitMember;
+          let res1 = await queryHelper.queryPromise(sql1, [startNum, size],connection);
+          // 更新学院下面的专业状态
+          let sql2 = SQL.ClassSQL.queryNumMember;
+          let res2 = await queryHelper.queryPromise(sql2, null,connection);
+        
+          await connection.commit()
+          connection.release()
+          resolve({
+            code: 200,
+            msg: '查询成功',
+            data: res1.data,
+            number: res2.data[0].number,
+            
+          })
+        }
+        catch (err) {
+          console.log('出错了，准备回滚', err)
+          await connection.rollback(() => {
+            console.log('回滚成功')
+            connection.release()
+          });
+          resolve({
+            code: 500,
+            err: err,
+            msg: '数据库操作失败'
+          })
+        }
+      }
+    })
+  })
+}
+
+
+/**
+ * 筛选班级成员信息
+ * @param {*} filter 
+ * @param {*} startNum 
+ * @param {*} size 
+ */
+let queryByFilterMemeber = (filter,startNum,size) => {
+  return new Promise(async (resolve, reject) => {
+    await db.getConnection(async (err, connection) => {
+        if (err) {
+            resolve({
+                code: 501,
+                err: err,
+                msg: '获取数据库链接失败'
+            })
+        }
+        else {
+            try {
+                await connection.beginTransaction()
+                let strBase = 'select * from classMemeber where ';
+                strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
+                let res1 = await queryHelper.queryPromise(strBase, null,connection);
+                
+                let strBase2 = 'select count(*) as number from classMemeber where ';
+                strBase2 = strBase2 + util.obj2MySql(filter);
+                let res2 = await queryHelper.queryPromise(strBase2, null,connection);
+                await connection.commit()
+                connection.release()
+                resolve({
+                    code: 200,
+                    msg: '更改用户信息成功',
+                    data: res1.data,
+                    total:  res2.data[0].number,
+                })
+            }
+            catch (err) {
+                console.log('出错了，准备回滚', err)
+                await connection.rollback(() => {
+                    console.log('回滚成功')
+                    connection.release()
+                });
+                resolve({
+                    code: 500,
+                    err: err,
+                    msg: '数据库操作失败'
+                })
+            }
+        }
+    })
+})
+}
+
+/**
+ * 删除版级成员信息
+ * @param {*} classIdList 
+ */
+let daleteClassMemeberList = (classIdList) => {
+  let sqlBase = `delete from classMemeber where id in (`;
+  classIdList.map((item, index) => {
+      if(index < classIdList.length - 1) {
+          sqlBase = sqlBase +'\'' +item + '\','
+      } else {
+          sqlBase = sqlBase + '\''+ item + '\');'
+      }
+  })
+  return queryHelper.queryPromise(sqlBase, null);
+}
+
+/**
+ * 导出班级成员
+ */
+let queryAllClassMemeber = () => {
+  let sql = SQL.ClassSQL.queryAllClassMemeber;
+  return queryHelper.queryPromise(sql, null);
+}
+
+/**
+ * 导出班级成员筛选
+ * @param {*} filter 
+ */
+let queryAllClassMemeberFilter = (filter) => {
+  let strBase = 'select * from classMemeber where ';
+  strBase = strBase + util.obj2MySql(filter);
+  return queryHelper.queryPromise(strBase, null);
+}
+
+
 let Dao = {
   insterClass,
   queryLimitClass,
@@ -233,6 +383,13 @@ let Dao = {
   queryById,
   updateClassInfo,
   queryByFilter,
-  daleteClassList
+  daleteClassList,
+
+  insterClassMemeber,
+  queryLimitClassMemeber,
+  queryByFilterMemeber,
+  daleteClassMemeberList,
+  queryAllClassMemeber,
+  queryAllClassMemeberFilter
 }
 module.exports = Dao

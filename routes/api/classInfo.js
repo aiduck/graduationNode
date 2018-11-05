@@ -23,5 +23,21 @@ router.post('/queryByFilter', controller.queryByFilter);
 // 删除信息
 router.post('/daleteClassList', controller.daleteClassList);
 
+// 插入班级成员
+router.post('/insterClassMemeber', controller.insterClassMemeber);
+
+// 查询班级成员
+router.get('/queryLimitClassMemeber', controller.queryLimitClassMemeber);
+
+// 筛选班级成员信息
+router.post('/queryByFilterMemeber', controller.queryByFilterMemeber);
+
+// 删除班级成员信息
+router.post('/daleteClassMemeberList', controller.daleteClassMemeberList);
+
+// 导出信息（不筛选）
+router.get('/queryAllClassMemeber', controller.queryAllClassMemeber);
+
+router.post('/queryAllClassMemeberFilter', controller.queryAllClassMemeberFilter);
 
 module.exports = router

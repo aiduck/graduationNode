@@ -25,7 +25,8 @@ router.post('/updateUserInfo',controller.updateUserInfo);
 // 删除操作
 router.post('/daleteUserList', controller.daleteUserList); 
 
-
+// 导出筛选
+router.post('/queryAllFilter', controller.queryAllFilter);
 
 
 module.exports = router

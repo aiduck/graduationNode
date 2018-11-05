@@ -24,6 +24,11 @@ let insterCourse = async (req, res, next) => {
                 data: course.data,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -55,6 +60,11 @@ let queryLimitCourse = async(req, res, next) => {
                 data: data,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -76,6 +86,11 @@ let updateCourseStatus = async(req, res, next) => {
                 code: 200,
                 data: statusPro.data,
                 msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
             })
         }
     }
@@ -107,6 +122,11 @@ let queryByFilter = async(req, res, next) =>{
                 data: data,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch(err) {
@@ -132,6 +152,11 @@ let queryCourseById = async(req, res, next) => {
                 data: data,
                 msg: 'success'
             })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch(err) {
@@ -155,6 +180,11 @@ let queryByIdForName = async(req, res, next) => {
                 code: 200,
                 data: data,
                 msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
             })
         }
     }
@@ -189,6 +219,11 @@ let updateCourseInfo = async(req, res, next) => {
                 data: coursePro.data,
                 msg: 'success'
             }) 
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
         }
     }
     catch (err) {
@@ -210,6 +245,11 @@ let daleteCourseList = async(req, res, next) => {
             res.send({
                 code: 200,
                 msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
             })
         }
     }
