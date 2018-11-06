@@ -262,6 +262,36 @@ let daleteCourseList = async(req, res, next) => {
     }
 }
 
+// 获取所有课程信息
+let queryAll = async(req, res, next) => {
+    try {
+        let queryAllPro = await courseInfoDao.queryAll();
+        console.log(queryAllPro);
+        let courseList = {
+            courseList: queryAllPro.data
+        }
+        if(queryAllPro.code === 200) {
+            res.send({
+                code: 200,
+                data: courseList,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch (err) {
+        console.log(err);
+        res.send({
+          code: 500,
+          msg: err.message || err.msg
+        })
+    }
+}
+
 let controller = {
 
     insterCourse,
@@ -271,6 +301,7 @@ let controller = {
     queryCourseById,
     updateCourseInfo,
     daleteCourseList,
-    queryByIdForName
+    queryByIdForName,
+    queryAll
 }
 module.exports = controller

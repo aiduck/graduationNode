@@ -9,6 +9,8 @@ var CourseSQL = {
     
     updatedStatus: 'UPDATE course SET status = ? WHERE course_id= ?',
     updateCourseInfo: 'UPDATE course SET course_name = ?,year=?,term=?,hours=?,grade=?,college_id=?,major_id=?,ratio_usual=?,ratio_project=? WHERE course_id= ?',
+
+    queryAll: `SELECT course_id,status FROM course`,
 }
 var SQL = {
     CourseSQL,

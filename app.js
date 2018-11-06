@@ -12,6 +12,8 @@ const teacherInfoRouter = require('./routes/api/teacherInfo')
 const studentInfoRouter = require('./routes/api/studentInfo')
 const courseInfoRouter = require('./routes/api/courseInfo')
 const classInfoRouter = require('./routes/api/classInfo')
+const projectInfoRouter = require('./routes/api/projectInfo')
+
 
 var app = express();
 
@@ -33,6 +35,7 @@ app.use('/api/teacherInfo',teacherInfoRouter);
 app.use('/api/studentInfo',studentInfoRouter);
 app.use('/api/courseInfo',courseInfoRouter);
 app.use('/api/classInfo',classInfoRouter);
+app.use('/api/projectInfo',projectInfoRouter);
 
 
 

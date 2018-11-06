@@ -23,4 +23,7 @@ router.post('/updateCourseInfo', controller.updateCourseInfo);
 // 删除课程
 router.post('/daleteCourseList', controller.daleteCourseList);
 
+// 获取所有课程信息
+router.get('/queryAll', controller.queryAll);
+
 module.exports = router
