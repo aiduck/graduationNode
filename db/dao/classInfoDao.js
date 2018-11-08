@@ -375,6 +375,31 @@ let queryAllClassMemeberFilter = (filter) => {
   return queryHelper.queryPromise(strBase, null);
 }
 
+/**
+ * 获取所有课程信息
+ */
+let queryAll = () => {
+  let sql = SQL.ClassSQL.queryAll;
+  return queryHelper.queryPromise(sql,null);
+}
+
+/**
+ * 获取班级名称
+ * @param {*} class_id 
+ */
+let queryByIdForName = (class_id) => {
+  let sql = SQL.ClassSQL.queryByIdForName;
+  
+  return queryHelper.queryPromise(sql, class_id);
+}
+/**
+ * 获取某个班级所有学生的id
+ * @param {*} class_id 
+ */
+let queryStuByClassId = (class_id) => {
+  let sql = SQL.ClassSQL.queryStuByClassId;
+  return queryHelper.queryPromise(sql, class_id);
+}
 
 let Dao = {
   insterClass,
@@ -390,6 +415,10 @@ let Dao = {
   queryByFilterMemeber,
   daleteClassMemeberList,
   queryAllClassMemeber,
-  queryAllClassMemeberFilter
+  queryAllClassMemeberFilter,
+
+  queryAll,
+  queryByIdForName,
+  queryStuByClassId
 }
 module.exports = Dao

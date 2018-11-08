@@ -209,12 +209,30 @@ let queryByFilter = (filter,startNum,size) => {
 })
 }
 
+/**
+ *  根据courseID查询project
+ * @param {*} course_id 
+ */
+let queryProByCourseID = (course_id) => {
+  let sql = SQL.projectSQL.queryProByCourseID;
+  return queryHelper.queryPromise(sql, course_id);
+}
+/**
+ * 查询pro名称
+ * @param {*} project_id 
+ */
+let queryByIdForName = (project_id) => {
+  let sql = SQL.projectSQL.queryByIdForName;
+  return queryHelper.queryPromise(sql, project_id);
+}
 let Dao = {
   insterProject,
   queryLimitProject,
   updateProjectStatus,
   queryById,
   updateProjectInfo,
-  queryByFilter
+  queryByFilter,
+  queryProByCourseID,
+  queryByIdForName
 }
 module.exports = Dao

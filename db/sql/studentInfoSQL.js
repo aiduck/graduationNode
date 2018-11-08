@@ -11,6 +11,8 @@ var UserSQL = {
 
         updateStuInfo: `UPDATE student SET username = ?,college_id=?,major_id=?,aclass_id=? WHERE user_id = ?`,
         updateUserInfo: `UPDATE userInfo SET username = ?,email=?,telno=?,address=? WHERE user_id= ?`,
+
+        queryByIdForName: 'SELECT username FROM student WHERE user_id= ?'
 }
 var SQL = {
     UserSQL,

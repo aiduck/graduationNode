@@ -296,6 +296,36 @@ let queryAllFilter = async(req, res, next) => {
     }
 }
 
+let queryByIdForName = async(req, res, next) => {
+
+    try {
+        let userPro = await studentInfoDao.queryByIdForName(req.body.user_id);
+        console.log(userPro);
+        if(userPro.code === 200) {
+            let data = {
+                user: userPro.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+        
+    }
+    catch(err) {
+        console.log(err);
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
 let controller = {
     queryLimitUser,
     queryUser,
@@ -307,6 +337,7 @@ let controller = {
     updateUserInfo,
 
     daleteUserList,
-    queryAllFilter
+    queryAllFilter,
+    queryByIdForName
 }
 module.exports = controller

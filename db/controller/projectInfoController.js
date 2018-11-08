@@ -200,6 +200,66 @@ let queryByFilter = async(req, res, next) =>{
         })
     }
 }
+
+// 根据courseID查询project
+let queryProByCourseID = async(req, res, next) => {
+    try {
+        let projectPro = await projectInfoDao.queryProByCourseID(req.body.course_id);
+        console.log(projectPro);
+        if(projectPro.code === 200) {
+            let data = {
+                projectIdList:projectPro.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
+
+let queryByIdForName = async(req, res, next) => {
+
+    try {
+        let projectPro = await projectInfoDao.queryByIdForName(req.body.project_id);
+        console.log(projectPro);
+        if(projectPro.code === 200) {
+            let data = {
+                project: projectPro.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
 let controller = {
     insterProject,
     queryLimitProject,
@@ -207,5 +267,7 @@ let controller = {
     queryById,
     updateProjectInfo,
     queryByFilter,
+    queryProByCourseID,
+    queryByIdForName,
 }
 module.exports = controller

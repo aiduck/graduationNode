@@ -107,6 +107,8 @@ let queryByFilter = (filter,startNum,size) => {
 }
 
 
+
+
 /**
  * 更新教师用户信息
  * @param {*} username 
@@ -282,6 +284,15 @@ let queryAllFilter = (filter) => {
     return queryHelper.queryPromise(strBase, null);
 }
 
+/**
+ * 查询学生姓名
+ * @param {*} user_id 
+ */
+let queryByIdForName = (user_id) => {
+    let sql = SQL.UserSQL.queryByIdForName;
+    return queryHelper.queryPromise(sql, user_id);
+}
+
 let Dao = {
     insertUserList,
 
@@ -293,11 +304,11 @@ let Dao = {
     queryUserById,
     queryByFilter,
 
-    
-
     updateUserInfo,
 
     daleteUserList,
-    queryAllFilter
+    queryAllFilter,
+
+    queryByIdForName
 }
 module.exports = Dao

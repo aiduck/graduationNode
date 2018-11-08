@@ -368,7 +368,7 @@ let daleteClassMemeberList = async(req, res, next) => {
     }
 }
 
-// 到处班级成员
+// 导出班级成员
 let queryAllClassMemeber = async(req, res, next) => {
     try {
         let user =  await classInfoDao.queryAllClassMemeber();
@@ -429,7 +429,94 @@ let queryAllClassMemeberFilter = async(req, res, next) => {
     }
 }
 
+// 获取所有教学班级信息
+let queryAll = async(req, res, next) => {
+    try {
+        let queryAllPro = await classInfoDao.queryAll();
+        console.log(queryAllPro);
+        let classList = {
+            classList: queryAllPro.data
+        }
+        if(queryAllPro.code === 200) {
+            res.send({
+                code: 200,
+                data: classList,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch (err) {
+        console.log(err);
+        res.send({
+          code: 500,
+          msg: err.message || err.msg
+        })
+    }
+}
 
+//  班级信息中的获取课程名称
+let queryByIdForName = async(req, res, next) => {
+    try {
+        let classPro = await classInfoDao.queryByIdForName(req.body.class_id);
+        console.log(classPro);
+        if(classPro.code === 200) {
+            let data = {
+                classes: classPro.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
+
+let queryStuByClassId = async(req, res, next) => {
+    try {
+        let classMemberPro = await classInfoDao.queryStuByClassId(req.body.class_id);
+        console.log(classMemberPro);
+        if(classMemberPro.code === 200) {
+            let data = {
+                studentId: classMemberPro.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
 let controller = {
 
     insterClass,
@@ -445,6 +532,10 @@ let controller = {
     queryByFilterMemeber,
     daleteClassMemeberList,
     queryAllClassMemeber,
-    queryAllClassMemeberFilter
+    queryAllClassMemeberFilter,
+
+    queryAll,
+    queryByIdForName,
+    queryStuByClassId
 }
 module.exports = controller

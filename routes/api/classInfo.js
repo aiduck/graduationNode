@@ -40,4 +40,10 @@ router.get('/queryAllClassMemeber', controller.queryAllClassMemeber);
 
 router.post('/queryAllClassMemeberFilter', controller.queryAllClassMemeberFilter);
 
+// 获取所有课程信息
+router.get('/queryAll', controller.queryAll);
+//  获取班级名称
+router.post('/queryByIdForName', controller.queryByIdForName);
+// 获取班级中所有stu的id
+router.post('/queryStuByClassId', controller.queryStuByClassId);
 module.exports = router

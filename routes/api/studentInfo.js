@@ -27,4 +27,7 @@ router.post('/daleteUserList', controller.daleteUserList);
 // 导出筛选
 router.post('/queryAllFilter', controller.queryAllFilter);
 
+// 查询学生姓名
+router.post('/queryByIdForName', controller.queryByIdForName);  
+
 module.exports = router

@@ -9,6 +9,10 @@ var projectSQL = {
     queryById: 'SELECT * FROM project WHERE project_id= ?',
 
     updateProjectInfo: 'UPDATE project SET project_name=?,project_content=?,target=?,course_id=? WHERE project_id= ?',
+
+    queryProByCourseID: 'SELECT project_id FROM project WHERE course_id= ?',
+
+    queryByIdForName: 'SELECT project_name FROM project WHERE project_id= ?'
 }
 var SQL = {
     projectSQL,

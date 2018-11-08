@@ -70,10 +70,26 @@ let obj2MySql = filter => {
     }
     return str
 }
+
+function getJsonLength(jsonData){
+ 
+	var jsonLength = 0;
+ 
+	for(var item in jsonData){
+ 
+		jsonLength++;
+ 
+	}
+ 
+	return jsonLength;
+ 
+}
+
 let utils = {
     strToArr,
     getId,
     obj2MySql,
+    getJsonLength
 }
 
 module.exports = utils;
