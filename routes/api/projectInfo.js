@@ -16,8 +16,10 @@ router.post('/updateProjectInfo', controller.updateProjectInfo);
 
 // 筛选信息
 router.post('/queryByFilter', controller.queryByFilter);
-// 查询课程的Pro
+
+// team里面的接口
 router.post('/queryProByCourseID', controller.queryProByCourseID);
+
 // 查询pro的名称
 router.post('/queryByIdForName', controller.queryByIdForName);  
 

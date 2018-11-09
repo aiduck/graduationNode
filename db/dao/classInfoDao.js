@@ -401,6 +401,11 @@ let queryStuByClassId = (class_id) => {
   return queryHelper.queryPromise(sql, class_id);
 }
 
+let queryAllByCourse = (course_id) => {
+  let sql = SQL.ClassSQL.queryAllByCourse;
+  return queryHelper.queryPromise(sql, course_id);
+}
+
 let Dao = {
   insterClass,
   queryLimitClass,
@@ -419,6 +424,7 @@ let Dao = {
 
   queryAll,
   queryByIdForName,
-  queryStuByClassId
+  queryStuByClassId,
+  queryAllByCourse
 }
 module.exports = Dao

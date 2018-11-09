@@ -176,7 +176,12 @@ let queryByFilter = (filter,startNum,size) => {
                 let status =  filter.status;
                 filter['project.status'] = status;
                 let isdelstatus = delete filter.status;
-                let strBase = 'SELECT project_id, project_name, project_content, target, project.course_id, project.status, course_name FROM project inner join course on project.course_id = course.course_id where ';
+
+                let course_id =  filter.course_id;
+                filter['project.course_id'] = course_id;
+                let isdelCourseID = delete filter.course_id;
+
+                let strBase = 'SELECT project_id, project_name, project_content, target, is_choose,project.course_id, project.status, course_name FROM project inner join course on project.course_id = course.course_id where ';
                 strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
                 let res1 = await queryHelper.queryPromise(strBase, null,connection);
               

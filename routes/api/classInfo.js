@@ -40,8 +40,11 @@ router.get('/queryAllClassMemeber', controller.queryAllClassMemeber);
 
 router.post('/queryAllClassMemeberFilter', controller.queryAllClassMemeberFilter);
 
+// team里的目前废弃接口
 // 获取所有课程信息
 router.get('/queryAll', controller.queryAll);
+// team 获取所有couser_id 下面的class
+router.post('/queryAllByCourse', controller.queryAllByCourse);
 //  获取班级名称
 router.post('/queryByIdForName', controller.queryByIdForName);
 // 获取班级中所有stu的id

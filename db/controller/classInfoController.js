@@ -488,7 +488,7 @@ let queryByIdForName = async(req, res, next) => {
         })
     }
 }
-
+// 查找所有学生
 let queryStuByClassId = async(req, res, next) => {
     try {
         let classMemberPro = await classInfoDao.queryStuByClassId(req.body.class_id);
@@ -496,6 +496,36 @@ let queryStuByClassId = async(req, res, next) => {
         if(classMemberPro.code === 200) {
             let data = {
                 studentId: classMemberPro.data
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
+
+// 查找所有class_id
+let queryAllByCourse = async(req, res, next) => {
+    try {
+        let classPro = await classInfoDao.queryAllByCourse(req.body.course_id);
+        console.log(classPro);
+        if(classPro.code === 200) {
+            let data = {
+                classId: classPro.data
             }
             res.send({
                 code: 200,
@@ -536,6 +566,7 @@ let controller = {
 
     queryAll,
     queryByIdForName,
-    queryStuByClassId
+    queryStuByClassId,
+    queryAllByCourse
 }
 module.exports = controller

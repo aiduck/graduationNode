@@ -5,10 +5,10 @@ const utils = require('../../util/utils')
 let insterProjectTeam = async (req, res, next) => {
     let team = req.body;
     let values = [];
-    let value = [`${team.team_id}`,`${team.team_name}`,`${team.class_id}`,`${team.user_id}`,`${team.project_id}`];
+    let value = [`${team.team_id}`,`${team.team_name}`,`${team.course_id}`,`${team.class_id}`,`${team.user_id}`,`${team.project_id}`];
     values.push(value);
     try {
-        let  teamPro = await projectTeamDao.insterProjectTeam(values);
+        let  teamPro = await projectTeamDao.insterProjectTeam(values,team.project_id);
         console.log(teamPro);
         if(teamPro.code === 200) {
             res.send({
@@ -68,6 +68,7 @@ let queryLimitTeam = async(req, res, next) => {
     }
 }
 
+// 删除团队（包括里面的成员）
 let deleteTeam = async(req, res, next) => {
     try {
         let  teamPro = await projectTeamDao.deleteTeam(req.body.team_id);
@@ -164,12 +165,13 @@ let updateProjectTeamInfo = async(req, res, next) => {
     let {
         team_id,
         team_name,
+        course_id,
         class_id,
         user_id,
         project_id,
     } = req.body.form;
     try {
-        let teamPro = await projectTeamDao.updateProjectTeamInfo(team_name,class_id,user_id,project_id,team_id);
+        let teamPro = await projectTeamDao.updateProjectTeamInfo(team_name,course_id,class_id,user_id,project_id,team_id);
         console.log(teamPro);
         if(teamPro.code === 200){
             res.send({

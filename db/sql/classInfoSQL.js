@@ -15,7 +15,8 @@ var ClassSQL = {
     queryAll: `SELECT class_id,status FROM classes`,
     // 班级信息中的获取课程名称
     queryByIdForName: 'SELECT class_name,course_id FROM classes WHERE class_id = ?',
-    queryStuByClassId: 'SELECT user_id FROM classMemeber where class_id = ?'
+    queryStuByClassId: 'SELECT user_id FROM classMemeber where class_id = ?',
+    queryAllByCourse: 'SELECT class_id,status FROM classes where course_id = ?'
 }
 var SQL = {
     ClassSQL,

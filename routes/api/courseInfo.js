@@ -23,6 +23,7 @@ router.post('/updateCourseInfo', controller.updateCourseInfo);
 // 删除课程
 router.post('/daleteCourseList', controller.daleteCourseList);
 
+// team 以及project里的接口
 // 获取所有课程信息
 router.get('/queryAll', controller.queryAll);
 

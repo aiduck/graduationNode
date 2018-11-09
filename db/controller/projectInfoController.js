@@ -7,12 +7,18 @@ let insterProject = async (req, res, next) => {
     let project = req.body;
     let values = [];
     let status;
+    let is_choose;
     if(project.status === '可用') {
         status = '可用'
     } else {
         status = '不可用'
     }
-    let value = [`${project.project_id}`,`${project.project_name}`,`${project.project_content}`,`${project.target}`,`${project.course_id}`,`${status}`];
+    if(project.is_choose === '可选') {
+        is_choose = '可选'
+    } else {
+        is_choose = '不可选'
+    }
+    let value = [`${project.project_id}`,`${project.project_name}`,`${project.project_content}`,`${project.target}`,`${project.course_id}`,`${status}`,`${is_choose}`];
     values.push(value);
     try {
         let  projectPro = await projectInfoDao.insterProject(values);
@@ -102,6 +108,7 @@ let updateProjectStatus = async(req, res, next) => {
     }
 }
 
+// 查询特殊个体
 let queryById = async(req, res, next) => {
     try {
         let projectPro = await projectInfoDao.queryById(req.body.project_id);
