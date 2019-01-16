@@ -1,0 +1,39 @@
+{
+    "code": 200,
+    "msg": "请求成功",
+    "data": {
+        "route" : [
+            {   
+                "path": "/basicInfo"
+            },
+            {
+                "path": "/userInfo"
+            },
+            {
+                "path": "/teacherInfo"
+            }
+        ],
+        "menu" : [
+            {
+                "icon": "el-icon-tickets",
+                "index":"/basicInfo",
+                "title": "基础信息"
+            },
+            {
+                "icon": "el-icon-lx-profile",
+                "index": "3",
+                "title": "用户信息",
+                "subs": [
+                    {
+                        "index": "/userInfo",
+                        "title": "用户基本信息"
+                    },
+                    {
+                        "index": "/teacherInfo",
+                        "title": "教师基本信息"
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "code": 200,
+    "msg": "请求成功",
+    "data": [
+        {   
+            "path": "/basicInfo"
+        },
+        {
+            "path": "/userInfo"
+        }
+    ]
+}

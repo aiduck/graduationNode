@@ -15,6 +15,10 @@ var UserSQL = {
     updateUserInfo: 'UPDATE userInfo SET username = ?,email=?,telno=?,address=?,user_type_name=? WHERE user_id= ?',
     updateTeaName: 'UPDATE teacher SET username = ? WHERE user_id= ?',
     updateStuName: 'UPDATE student SET username = ? WHERE user_id= ?',
+
+
+    // login 用户登录接口
+    login: 'SELECT * FROM userInfo WHERE user_id= ? and password = ?',
 }
 var SQL = {
     UserSQL,

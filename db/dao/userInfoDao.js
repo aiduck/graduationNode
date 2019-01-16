@@ -4,6 +4,15 @@ const SQL = require('../sql/userInfoSQL');
 const util = require('../../util/utils')
 
 /**
+ * 用户登录
+ * @param {*用户id} username 
+ * @param {*用户密码} password 
+ */
+let login = (username, password) => {
+    let sql = SQL.UserSQL.login;
+    return queryHelper.queryPromise(sql, [username, password]);
+}
+/**
  * 查询固定范围的用户信息
  * @param {*limit start} startNum 
  * @param {*limit size} size 
@@ -371,6 +380,7 @@ let queryAllFilter = (filter) => {
 
 
 let Dao = {
+    login,
     queryLimitUser,
     queryNum,
     query,

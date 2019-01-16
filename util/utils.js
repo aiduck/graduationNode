@@ -85,11 +85,21 @@ function getJsonLength(jsonData){
  
 }
 
+/**
+ * 获取数组中是否有这个字符串
+ * @param {字符串} str 
+ * @param {数组} arr 
+ */
+const hasOneOf = (str,arr) => {
+  return arr.some(item => item.includes(str))
+}
+
 let utils = {
     strToArr,
     getId,
     obj2MySql,
-    getJsonLength
+    getJsonLength,
+    hasOneOf
 }
 
 module.exports = utils;

@@ -14,6 +14,8 @@ const courseInfoRouter = require('./routes/api/courseInfo')
 const classInfoRouter = require('./routes/api/classInfo')
 const projectInfoRouter = require('./routes/api/projectInfo')
 const projectTeamRouter = require('./routes/api/projectTeam')
+const loginRouter = require('./routes/api/login')
+const authRoute = require('./routes/api/authRoute')
 
 
 var app = express();
@@ -38,6 +40,10 @@ app.use('/api/courseInfo',courseInfoRouter);
 app.use('/api/classInfo',classInfoRouter);
 app.use('/api/projectInfo',projectInfoRouter);
 app.use('/api/projectTeam',projectTeamRouter);
+app.use('/api',loginRouter);
+app.use('/api',authRoute);
+
+
 
 
 
