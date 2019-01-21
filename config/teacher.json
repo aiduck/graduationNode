@@ -10,7 +10,52 @@
                 "path": "/userInfo"
             },
             {
+                "path": "/userDetails/:userId/:isCheck"
+            },
+            {
                 "path": "/teacherInfo"
+            },
+            {
+                "path": "/teacherInfo/:userId/:isCheck"
+            },
+            {
+                "path": "/studentInfo"
+            },
+            {
+                "path": "/studentInfo/:userId/:isCheck"
+            },
+            {
+                "path": "/courseInfo"
+            },
+            {
+                "path": "/courseInfo/:courseId/:isCheck"
+            },
+            {
+                "path": "/classInfo"
+            },
+            {
+                "path": "/classInfo/:classId/:isCheck"
+            },
+            {
+                "path": "/classMemeberInfo"
+            },
+            {
+                "path": "/projectInfo"
+            },
+            {
+                "path": "/projectDetailInfo/:projectId/:isCheck"
+            },
+            {
+                "path": "/projectTeamInfo"
+            },
+            {
+                "path": "/projectTeamDetail/:teamId/:isCheck"
+            },
+            {
+                "path": "/projectReport"
+            },
+            {
+                "path": "/projectReportDetail/:reportId/:isCheck"
             }
         ],
         "menu" : [
@@ -31,6 +76,49 @@
                     {
                         "index": "/teacherInfo",
                         "title": "教师基本信息"
+                    },
+                    {
+                        "index": "/studentInfo",
+                        "title": "学生基本信息"
+                    }
+                ]
+            },
+            {
+                "icon": "el-icon-lx-read",
+                "index": "/courseInfo",
+                "title": "课程信息"
+            },
+            {
+                "icon": "el-icon-lx-tag",
+                "index": "5",
+                "title": "班级信息",
+                "subs": [
+                    {
+                        "index": "/classInfo",
+                        "title": "班级基本信息"
+                    },
+                    {
+                        "index": "/classMemeberInfo",
+                        "title": "班级成员信息"
+                    }
+                ]
+            },
+            {
+                "icon": "el-icon-lx-file",
+                "index": "6",
+                "title": "项目信息",
+                "subs": [
+                    {
+                        "index": "/projectInfo",
+                        "title": "项目案例库信息"
+                    },
+                    {
+                        "index": "/projectTeamInfo",
+                        "title": "项目组"
+                    },
+                    {
+                        "index": "/projectReport",
+                        "title": "项目日报"
                     }
                 ]
             }

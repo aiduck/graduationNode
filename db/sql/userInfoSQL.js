@@ -7,7 +7,7 @@ var UserSQL = {
     query: 'SELECT user_id, username, email, telno, address, user_type_name, status FROM userInfo',
     queryLimit: 'SELECT user_id, username, email, telno, address, user_type_name, status FROM userInfo limit ?, ?',
     queryNum:'SELECT count(*) as number FROM userInfo',
-    queryById: 'SELECT * FROM userInfo WHERE user_id= ?',
+    queryById: 'SELECT user_id, username, email, telno, address, user_type_name, status FROM userInfo WHERE user_id= ?',
 
 
     updatedStatus: 'UPDATE userInfo SET status = ? WHERE user_id= ?',
@@ -19,6 +19,8 @@ var UserSQL = {
 
     // login 用户登录接口
     login: 'SELECT * FROM userInfo WHERE user_id= ? and password = ?',
+    // 验证用户ID 和登录的用户名是一致的
+    checkUserId: 'SELECT username FROM userInfo WHERE user_id= ?'
 }
 var SQL = {
     UserSQL,

@@ -342,7 +342,7 @@ let queryByFilterMemeber = (filter,startNum,size) => {
 }
 
 /**
- * 删除版级成员信息
+ * 删除班级成员信息
  * @param {*} classIdList 
  */
 let daleteClassMemeberList = (classIdList) => {

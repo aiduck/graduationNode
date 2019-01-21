@@ -55,7 +55,7 @@
                 "path": "/projectReport"
             },
             {
-                "path": "/projectReportDetail/:report_id/:isCheck"
+                "path": "/projectReportDetail/:reportId/:isCheck"
             }
         ],
         "menu" : [

@@ -9,10 +9,14 @@ var projectTeamSQL = {
     deleteTeamAndMember: 'delete from team_members where team_id = ?',
 
     queryById: 'SELECT * FROM team WHERE team_id= ?',
+    queryByProjectId: 'SELECT * FROM team WHERE project_id= ?',
     updateProjectTeamInfo: 'UPDATE team SET team_name=?,course_id=?,class_id=?,user_id=?,project_id=? WHERE team_id= ?',
 
     insertTeamMember: 'INSERT IGNORE INTO team_members(team_id,user_id) VALUES ?',
-    deleteTeamMember: 'delete from team_members where team_id = ? and user_id = ?'
+    deleteTeamMember: 'delete from team_members where team_id = ? and user_id = ?',
+
+    // 获取学生参与的所有项目ID
+    queryProIDByUserID: 'SELECT project_id FROM team, team_members where team_members.user_id = ? and team.team_id = team_members.team_id'
 }
 var SQL = {
     projectTeamSQL,

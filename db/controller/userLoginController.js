@@ -21,7 +21,8 @@ let login =  async(req, res, next) => {
                 let data = {
                     token: jwt.sign({ username: username, usertype: login.data[0].user_type_name  }, 'yhcj(这里填的是你的加密密钥，可以读取文件，或者可以这样瞎写一段)', { expiresIn: TOKEN_MAX_TIME }),
                     usertype: login.data[0].user_type_name,
-                    username: login.data[0].username
+                    username: login.data[0].username,
+                    user_id: login.data[0].user_id,
                 }
                 res.send({
                     code: 200,

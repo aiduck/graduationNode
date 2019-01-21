@@ -17,6 +17,8 @@ const projectTeamRouter = require('./routes/api/projectTeam')
 const loginRouter = require('./routes/api/login')
 const authRoute = require('./routes/api/authRoute')
 
+const projectReport = require('./routes/api/projectReport')
+
 
 var app = express();
 
@@ -42,6 +44,9 @@ app.use('/api/projectInfo',projectInfoRouter);
 app.use('/api/projectTeam',projectTeamRouter);
 app.use('/api',loginRouter);
 app.use('/api',authRoute);
+
+app.use('/api/projectReport',projectReport);
+
 
 
 
