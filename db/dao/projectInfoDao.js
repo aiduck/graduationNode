@@ -146,9 +146,9 @@ let queryById = (project_id) => {
  * @param {*} user_id 
  * @param {*} class_id 
  */
-let updateProjectInfo = (project_name,project_content,target,course_id,project_id) => {
+let updateProjectInfo = (project_name,project_content,target,course_id,deadline,project_id) => {
   let sql = SQL.projectSQL.updateProjectInfo;
-  return queryHelper.queryPromise(sql, [project_name,project_content,target,course_id,project_id]);
+  return queryHelper.queryPromise(sql, [project_name,project_content,target,course_id,deadline,project_id]);
 }
 
 /**
@@ -194,7 +194,7 @@ let queryByFilter = (filter,startNum,size) => {
                     code: 200,
                     data: res1.data,
                     total:  res2.data[0].number,
-                    
+                    msg: '筛选成功'
                 })
             }
             catch (err) {

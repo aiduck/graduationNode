@@ -205,7 +205,7 @@ let queryByFilter = (filter,startNum,size) => {
                     code: 200,
                     data: res1.data,
                     total:  res2.data[0].number,
-                    
+                    msg: '筛选成功'
                 })
             }
             catch (err) {

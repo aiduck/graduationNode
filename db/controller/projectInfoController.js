@@ -18,7 +18,7 @@ let insterProject = async (req, res, next) => {
     } else {
         is_choose = '不可选'
     }
-    let value = [`${project.project_id}`,`${project.project_name}`,`${project.project_content}`,`${project.target}`,`${project.course_id}`,`${status}`,`${is_choose}`];
+    let value = [`${project.project_id}`,`${project.project_name}`,`${project.project_content}`,`${project.target}`,`${project.course_id}`,`${status}`,`${is_choose}`,`${project.deadline}`];
     values.push(value);
     try {
         let  projectPro = await projectInfoDao.insterProject(values);
@@ -145,10 +145,11 @@ let updateProjectInfo = async(req, res, next) => {
         project_content,
         target,
         course_id,
-        project_id
+        project_id,
+        deadline
     } = req.body.form;
     try {
-        let projectPro = await projectInfoDao.updateProjectInfo(project_name,project_content,target,course_id,project_id);
+        let projectPro = await projectInfoDao.updateProjectInfo(project_name,project_content,target,course_id,deadline,project_id);
         console.log(projectPro);
         if(projectPro.code === 200){
             res.send({

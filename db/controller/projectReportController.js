@@ -41,7 +41,7 @@ let inster = async (req, res, next) => {
 let checkUserIdAndRetPro = async(req, res, next) => {
     let user = req.body;
     try {
-        let  dao = await projectReportDao.checkUserIdAndRetPro(user.user_id,user.username);
+        let  dao = await projectReportDao.checkUserIdAndRetPro(user.user_id,user.username,user.sub_time);
         if(dao.code === 200) {
             res.send({
                 code: 200,
@@ -68,18 +68,19 @@ let checkUserIdAndRetPro = async(req, res, next) => {
     }
 }
 
-// 学生查询内容
+// 用户查询内容
 let queryReport =  async(req, res, next) => {
     let params = req.query;
     let pageSize = params.pageSize;
     let currentPage = params.currentPage;
     let usertype = params.usertype;
     let user_id = params.user_id;
+    let sub_time = params.sub_time;
 
     let startNum = (currentPage - 1) * pageSize;
     let size = pageSize * 1;
     try {
-        let reportPro = await projectReportDao.queryReport(user_id,usertype,startNum,size);
+        let reportPro = await projectReportDao.queryReport(user_id,usertype,startNum,size,sub_time);
         if(reportPro.code === 200) {
             let data = {
                 reportList: reportPro.data,

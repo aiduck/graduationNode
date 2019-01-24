@@ -22,7 +22,7 @@ let insterProjectReport = (values) => {
  * @param {*} user_id 
  * @param {*} username 
  */
-let checkUserIdAndRetPro = (user_id, username) => {
+let checkUserIdAndRetPro = (user_id, username,sub_time) => {
     return new Promise(async (resolve, reject) => {
         await db.getConnection(async (err, connection) => {
             if (err) {
@@ -42,11 +42,19 @@ let checkUserIdAndRetPro = (user_id, username) => {
                     if(res.data[0].username === username) {
                         let sql2 = projectTeamSQL.projectTeamSQL.queryProIDByUserID;
                         res2 = await queryHelper.queryPromise(sql2, user_id);
+                        let data = [];
+                        console.log(res2.data)
+                        for(let i = 0; i < res2.data.length; i++) {
+                            if(util.diffStrTime(sub_time,res2.data[i].deadline)) {
+                                data.push(res2.data[i]);
+                            }
+                        }
+                        console.log(data);
                         await connection.commit()
                         connection.release()
                         resolve({
                             code: 200,
-                            data: res2.data,
+                            data: data,
                             msg: '查询成功',
                         })
                     } else {
@@ -76,12 +84,12 @@ let checkUserIdAndRetPro = (user_id, username) => {
 }
 
 /**
- * 学生查询所有项目日报
+ * 用户查询所有项目日报
  * @param {*} user_id 
  * @param {*} startNum 
  * @param {*} size 
  */
-let queryReport = (user_id,usertype,startNum,size) => {
+let queryReport = (user_id,usertype,startNum,size,sub_time) => {
     return new Promise(async (resolve, reject) => {
         await db.getConnection(async (err, connection) => {
             if (err) {
@@ -309,7 +317,12 @@ let queryByFilter = (filter,startNum,size) => {
             else {
                 try {
                     await connection.beginTransaction()
-                    let strBase = 'select * from daily_report where ';
+
+                    let project_id =  filter.project_id;
+                    filter['daily_report.project_id'] = project_id;
+                    delete filter.project_id;
+
+                    let strBase = 'select report_id,report_date,report_time,report_work,report_problem,report_plan,report_status,report_comment,daily_report.project_id,daily_report.user_id, deadline from daily_report,project where project.project_id = daily_report.project_id and ';
                     strBase = strBase + util.obj2MySql(filter) + `limit ${startNum},${size}`;
                     let res1 = await queryHelper.queryPromise(strBase, null,connection);
 
@@ -320,7 +333,7 @@ let queryByFilter = (filter,startNum,size) => {
                     connection.release()
                     resolve({
                         code: 200,
-                        msg: '更改用户信息成功',
+                        msg: '筛选成功',
                         data: res1.data,
                         total: res2.data[0].number,
                       

@@ -16,7 +16,7 @@ var projectTeamSQL = {
     deleteTeamMember: 'delete from team_members where team_id = ? and user_id = ?',
 
     // 获取学生参与的所有项目ID
-    queryProIDByUserID: 'SELECT project_id FROM team, team_members where team_members.user_id = ? and team.team_id = team_members.team_id'
+    queryProIDByUserID: 'SELECT project.project_id, deadline FROM team, team_members, project where team_members.user_id = ? and team.team_id = team_members.team_id and team.project_id = project.project_id'
 }
 var SQL = {
     projectTeamSQL,

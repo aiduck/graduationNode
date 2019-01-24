@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { TOKEN_MAX_TIME } = require('../../config/index')
+const config  = require('../../config')
 const userInfoDao = require('../dao/userInfoDao')
 
 
@@ -19,7 +19,7 @@ let login =  async(req, res, next) => {
                 })  
             } else  if(login.data.length === 1) {
                 let data = {
-                    token: jwt.sign({ username: username, usertype: login.data[0].user_type_name  }, 'yhcj(这里填的是你的加密密钥，可以读取文件，或者可以这样瞎写一段)', { expiresIn: TOKEN_MAX_TIME }),
+                    token: jwt.sign({ username: username, usertype: login.data[0].user_type_name  }, 'yhcj(这里填的是你的加密密钥，可以读取文件，或者可以这样瞎写一段)', { expiresIn: config.TOKEN_MAX_TIME }),
                     usertype: login.data[0].user_type_name,
                     username: login.data[0].username,
                     user_id: login.data[0].user_id,
@@ -55,7 +55,7 @@ let authorization = (req,res) => {
     try {
         if(usertype !== '' && username !== '') {
             let data = {
-                token: jwt.sign({ username: username, usertype: usertype }, 'yhcj(这里填的是你的加密密钥，可以读取文件，或者可以这样瞎写一段)', { expiresIn: TOKEN_MAX_TIME }),
+                token: jwt.sign({ username: username, usertype: usertype }, 'yhcj(这里填的是你的加密密钥，可以读取文件，或者可以这样瞎写一段)', { expiresIn: config.TOKEN_MAX_TIME }),
             }
             res.send({
                 code: 200,

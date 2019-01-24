@@ -9,7 +9,7 @@ router.post('/checkUserIdAndRetPro', controller.checkUserIdAndRetPro);
 // 插入操作
 router.post('/inster', controller.inster);
 
-// 学生查询接口
+// 用户查询接口
 router.get('/queryReport', controller.queryReport);
 
 // 查询特定的日报信息

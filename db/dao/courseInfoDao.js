@@ -107,7 +107,7 @@ let queryByFilter = (filter,startNum,size) => {
                 connection.release()
                 resolve({
                     code: 200,
-                    msg: '更改用户信息成功',
+                    msg: '筛选成功',
                     data: res1.data,
                     total:  res2.data[0].number,
                     

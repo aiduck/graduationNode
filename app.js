@@ -18,6 +18,8 @@ const loginRouter = require('./routes/api/login')
 const authRoute = require('./routes/api/authRoute')
 
 const projectReport = require('./routes/api/projectReport')
+const projectAchi = require('./routes/api/projectAchi')
+
 
 
 var app = express();
@@ -46,6 +48,8 @@ app.use('/api',loginRouter);
 app.use('/api',authRoute);
 
 app.use('/api/projectReport',projectReport);
+app.use('/api/projectAchi',projectAchi);
+
 
 
 
