@@ -312,7 +312,7 @@ let queryByFilter = (filter,startNum,size) => {
                     code: 501,
                     err: err,
                     msg: '获取数据库链接失败'
-                })
+                });
             }
             else {
                 try {
