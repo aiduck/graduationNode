@@ -7,6 +7,14 @@ const projectInfoSQL = require('../sql/projectInfoSQL');
 const classInfoSQL = require('../sql/classInfoSQL');
 const util = require('../../util/utils');
 
+/**
+ * 添加记录前查询是否小组成员已经添加了信息
+ * @param {*} values 
+ */
+let queryRepByProId = (project_id) => {
+    let sql = SQL.projectReportSQL.queryRepByProId;
+    return queryHelper.queryPromise(sql, project_id);
+}
 
 /**
  * 添加记录
@@ -358,6 +366,7 @@ let queryByFilter = (filter,startNum,size) => {
 
 
 let Dao = {
+    queryRepByProId,
     insterProjectReport,
     checkUserIdAndRetPro,
     queryReport,

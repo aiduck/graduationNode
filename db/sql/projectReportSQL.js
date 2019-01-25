@@ -1,4 +1,7 @@
 var projectReportSQL = {
+
+    queryRepByProId: 'select daily_report.user_id, username, daily_report.project_id, project_name from  daily_report, userInfo,project where daily_report.project_id = ? and daily_report.user_id = userInfo.user_id and daily_report.project_id = project.project_id',
+
     insert:'INSERT IGNORE INTO daily_report(report_id,report_date,report_time,report_work,report_problem,report_plan,report_status,report_comment,project_id,user_id) VALUES ?',
 
     // admin 可以查看所有的信息

@@ -4,6 +4,7 @@ const id = {
     courseId: '01',
     reportId: '02',
     achiId: '03',
+    selfId: '04',
 
 }
 var fs = require("fs");

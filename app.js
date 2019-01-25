@@ -20,7 +20,7 @@ const authRoute = require('./routes/api/authRoute')
 const projectReport = require('./routes/api/projectReport')
 const projectAchi = require('./routes/api/projectAchi')
 
-
+const projectSelfEval = require('./routes/api/projectSelfEval')
 
 var app = express();
 
@@ -49,7 +49,7 @@ app.use('/api',authRoute);
 
 app.use('/api/projectReport',projectReport);
 app.use('/api/projectAchi',projectAchi);
-
+app.use('/api/projectSelfEval',projectSelfEval);
 
 
 

@@ -6,6 +6,9 @@ const controller = require('../../db/controller/projectReportController');
 // 验证以及返回项目ID列表
 router.post('/checkUserIdAndRetPro', controller.checkUserIdAndRetPro);
 
+// 添加信息前，检查是否已经存在该项目成果了
+router.post('/queryRepByProId', controller.queryRepByProId);
+
 // 插入操作
 router.post('/inster', controller.inster);
 

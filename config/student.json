@@ -62,6 +62,12 @@
             },
             {
                 "path": "/projectAchiDetail/:deliveryId/:isCheck"
+            },
+            {
+                "path": "/projectSelfEval"
+            },
+            {
+                "path": "/projectSelfEvalDetail/:id/:isCheck"
             }
         ],
         "menu" : [
@@ -129,6 +135,10 @@
                     {
                         "index": "/projectAchi",
                         "title": "项目成果"
+                    },
+                    {
+                        "index": "/projectSelfEval",
+                        "title": "项目自评"
                     }
                 ]
             }
