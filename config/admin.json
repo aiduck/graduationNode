@@ -68,6 +68,12 @@
             },
             {
                 "path": "/projectSelfEvalDetail/:id/:isCheck"
+            },
+            {
+                "path": "/projecCase"
+            },
+            {
+                "path": "/projecCaseDetail/:id/:isCheck"
             }
         ],
         "menu" : [
@@ -139,6 +145,10 @@
                     {
                         "index": "/projectSelfEval",
                         "title": "项目自评"
+                    },
+                    {
+                        "index": "/projecCase",
+                        "title": "项目收藏"
                     }
                 ]
             }

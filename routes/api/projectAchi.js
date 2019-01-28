@@ -22,6 +22,23 @@ router.post('/queryprojectAchiDetil', controller.queryprojectAchiDetil);
 // 修改日报信息
 router.post('/updateprojectAchi', controller.updateprojectAchi);
 
+// 收藏
+router.post('/collectProjectCase', controller.collectProjectCase);
+
+// init 项目收藏案例库list表格
+router.get('/queryAllCase', controller.queryAllCase);
+
+// 用过id查询收藏项目的详细信息
+router.post('/queryCaseById', controller.queryCaseById);
+
+// 项目收藏筛选
+router.post('/queryCaseByFilter', controller.queryCaseByFilter);
+
+//通过project_id 查询项目成果的成果id
+router.post('/queryDelIdByProID', controller.queryDelIdByProID);
+
+
+
 
 /**
  * 动态地生成上传中间件

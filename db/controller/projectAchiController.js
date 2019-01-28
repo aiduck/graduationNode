@@ -279,7 +279,7 @@ let deleteAchifile =  async(req, res, next) => {
     }
 }
 
-// 筛选
+// 筛选项目成果
 let queryByFilter = async(req, res, next) => {
     let filter = req.body.filter;
     let pageSize = req.body.pageSize;
@@ -314,6 +314,158 @@ let queryByFilter = async(req, res, next) => {
     }
 }
 
+// 收藏
+let collectProjectCase = async(req, res, next) => {
+    let is_collect = req.body.is_collect;
+    let delivery_id = req.body.delivery_id;
+    let projectObj = req.body.projectObj;
+    console.log(is_collect,delivery_id,projectObj);
+    try {
+        let  projectPro = await projectAchiDao.collectProjectCase(is_collect,delivery_id,projectObj);
+        if(projectPro.code === 200) {
+            res.send({
+                code: 200,
+                data: [],
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch (err) {
+        res.send({
+          code: 500,
+          msg: err.message || err.msg
+        })
+    }
+}
+
+// init 项目收藏table_list
+let queryAllCase = async(req, res, next) => {
+    let params = req.query;
+    let pageSize = params.pageSize;
+    let currentPage = params.currentPage;
+
+    let startNum = (currentPage - 1) * pageSize;
+    let size = pageSize * 1;
+    try {
+        let  projectPro = await projectAchiDao.queryAllCase(startNum,size);
+        let data = {
+            projectCaseList: projectPro.data,
+            total: projectPro.number
+        }
+        if(projectPro.code === 200) {
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch (err) {
+        res.send({
+          code: 500,
+          msg: err.message || err.msg
+        })
+    }
+}
+
+// 用过id查询收藏项目的详细信息
+let queryCaseById = async(req, res, next) => {
+    let id = req.body.id;
+    console.log(id);
+    try {
+        let  projectPro = await projectAchiDao.queryCaseById(id);
+        if(projectPro.code === 200) {
+            res.send({
+                code: 200,
+                data: projectPro.data,
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch (err) {
+        res.send({
+          code: 500,
+          msg: err.message || err.msg
+        })
+    }
+}
+
+// 筛选项目收藏
+let queryCaseByFilter = async(req, res, next) => {
+    let filter = req.body.filter;
+    let pageSize = req.body.pageSize;
+    let currentPage = req.body.currentPage;
+    let startNum = (currentPage - 1) * pageSize;
+    let size = pageSize * 1;
+    try {
+        let filterPro = await projectAchiDao.queryCaseByFilter(filter,startNum,size);
+        if(filterPro.code === 200) {
+            let data = {
+                caseList: filterPro.data,
+                total:  filterPro.total
+            }
+            res.send({
+                code: 200,
+                data: data,
+                msg: 'success'
+            });
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
+
+
+// 通过project_id 查询项目成果的成果id
+let queryDelIdByProID = async (req, res, next) => {
+    let project_id = req.body.project_id;
+    try {
+        let  projectAchiPro = await projectAchiDao.queryDelIdByProID(project_id);
+        if(projectAchiPro.code === 200) {
+            res.send({
+                code: 200,
+                data: projectAchiPro.data[0],
+                msg: 'success'
+            })
+        } else {
+            res.send({
+                code: 201,
+                msg: '数据库操作失败'
+            })
+        }
+    }
+    catch (err) {
+        res.send({
+          code: 500,
+          msg: err.message || err.msg
+        })
+    }
+}
 
 let controller = {
     queryAchiByProId,
@@ -325,7 +477,11 @@ let controller = {
     updateprojectAchi,
     deleteAllAchifile,
     deleteAchifile,
-    queryByFilter
-
+    queryByFilter,
+    collectProjectCase,
+    queryAllCase,
+    queryCaseById,
+    queryCaseByFilter,
+    queryDelIdByProID
 }
 module.exports = controller
