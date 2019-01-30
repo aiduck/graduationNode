@@ -196,7 +196,7 @@ let updateProjectTeamInfo = async(req, res, next) => {
 // 插入团队成员
 let insertTeamMember = async(req, res, next) => {
     try {
-        let teamPro = await projectTeamDao.insertTeamMember(req.body.team_id,req.body.user_id);
+        let teamPro = await projectTeamDao.insertTeamMember(req.body.team_id,req.body.user_id,req.body.project_id);
         console.log(teamPro);
         if(teamPro.code === 200) {
             res.send({
@@ -222,7 +222,7 @@ let insertTeamMember = async(req, res, next) => {
 // 删除团队成员
 let deleteTeamMember = async(req, res, next) => {
     try {
-        let teamPro = await projectTeamDao.deleteTeamMember(req.body.team_id,req.body.user_id);
+        let teamPro = await projectTeamDao.deleteTeamMember(req.body.team_id,req.body.user_id,req.body.project_id);
         console.log(teamPro);
         if(teamPro.code === 200) {
             res.send({

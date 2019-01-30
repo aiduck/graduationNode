@@ -70,6 +70,12 @@
                 "path": "/projectSelfEvalDetail/:id/:isCheck"
             },
             {
+                "path": "/projectScore"
+            },
+            {
+                "path": "/projectScoreDetail/:teamId/:isCheck"
+            },
+            {
                 "path": "/projecCase"
             },
             {
@@ -149,6 +155,10 @@
                     {
                         "index": "/projecCase",
                         "title": "项目收藏"
+                    },
+                    {
+                        "index": "/projectScore",
+                        "title": "项目成绩"
                     }
                 ]
             }

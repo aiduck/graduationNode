@@ -385,18 +385,111 @@ let updateProjectTeamInfo = (team_name,course_id,class_id,user_id,project_id,tea
  * 插入团队成员
  * @param {*} team_id 
  * @param {*} user_id 
+ * @param {*} project_id 
  */
-let insertTeamMember = (team_id,user_id) => {
-  let sql = SQL.projectTeamSQL.insertTeamMember;
-  let values = [];
-  let value = [`${team_id}`,`${user_id}`];
-  values.push(value);
-  return queryHelper.queryPromise(sql, [values]);
+let insertTeamMember = (team_id,user_id,project_id) => {
+  return new Promise(async (resolve, reject) => {
+    await db.getConnection(async (err, connection) => {
+      if (err) {
+        resolve({
+          code: 501,
+          err: err,
+          msg: '获取数据库链接失败'
+        })
+      }
+      else {
+        try {
+          await connection.beginTransaction()
+
+          let sql = SQL.projectTeamSQL.insertTeamMember;
+          let values = [];
+          let value = [`${team_id}`,`${user_id}`];
+          values.push(value);
+          let res =  await queryHelper.queryPromise(sql, [values],connection);
+
+          let sql2 = SQL.projectTeamSQL.insertScore;
+          let values2 = [];
+          let value2 = [`${user_id}`,`${project_id}`];
+          values2.push(value2);
+          let res2 =  await queryHelper.queryPromise(sql2, [values2],connection);
+
+
+          await connection.commit()
+          connection.release()
+          resolve({
+            code: 200,
+            msg: '查询成功',
+          })
+        }
+        catch (err) {
+          console.log('出错了，准备回滚', err)
+          await connection.rollback(() => {
+            console.log('回滚成功')
+            connection.release()
+          });
+          resolve({
+            code: 500,
+            err: err,
+            msg: '数据库操作失败'
+          })
+        }
+      }
+    })
+  })
+
+
 }
 
-let deleteTeamMember = (team_id,user_id) => {
-  let sql = SQL.projectTeamSQL.deleteTeamMember;
-  return queryHelper.queryPromise(sql, [team_id,user_id]);
+/**
+ * 删除项目成员
+ * @param {*} team_id 
+ * @param {*} user_id 
+ * @param {*} project_id 
+ */
+let deleteTeamMember = (team_id,user_id,project_id) => {
+  return new Promise(async (resolve, reject) => {
+    await db.getConnection(async (err, connection) => {
+      if (err) {
+        resolve({
+          code: 501,
+          err: err,
+          msg: '获取数据库链接失败'
+        })
+      }
+      else {
+        try {
+          await connection.beginTransaction()
+
+          let sql = SQL.projectTeamSQL.deleteTeamMember;
+          let res1 =  await queryHelper.queryPromise(sql, [team_id,user_id],connection);
+
+          let sql2 = SQL.projectTeamSQL.deleteScore;
+          let res2 =  await queryHelper.queryPromise(sql2, [user_id,project_id],connection);
+
+          await connection.commit()
+          connection.release()
+          resolve({
+            code: 200,
+            msg: '查询成功',
+          })
+        }
+        catch (err) {
+          console.log('出错了，准备回滚', err)
+          await connection.rollback(() => {
+            console.log('回滚成功')
+            connection.release()
+          });
+          resolve({
+            code: 500,
+            err: err,
+            msg: '数据库操作失败'
+          })
+        }
+      }
+    })
+  })
+
+  
 }
 
 let Dao = {
