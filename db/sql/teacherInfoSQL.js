@@ -14,6 +14,8 @@ var UserSQL = {
 
         updateTeaInfo: `UPDATE teacher SET username = ?,sex=?,job_title=?,education=? WHERE user_id = ?`,
         updateUserInfo: `UPDATE userInfo SET username = ?,email=?,telno=?,address=? WHERE user_id= ?`,
+
+        queryAllTeaId: 'SELECT user_id,status from userInfo where user_type_name = "教师" ',
 }
 var SQL = {
     UserSQL,

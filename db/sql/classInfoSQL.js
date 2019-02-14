@@ -3,6 +3,12 @@ var ClassSQL = {
 
     queryLimit: 'SELECT * FROM classes limit ?, ?',
     queryNum:'SELECT count(*) as number FROM classes',
+    queryAllByTea: 'SELECT * FROM classes where user_id = ? limit ?, ?',
+    queryNumByTea: 'SELECT count(*) as number FROM classes where user_id = ?',
+    queryAllByStu: 'SELECT classes.class_id, classes.class_name,classes.course_id,classes.user_id,classes.status FROM classes, classMemeber where classMemeber.user_id = ? and classMemeber.class_id = classes.class_id  limit ?, ?',
+    queryNumByStu: 'SELECT count(*) as number FROM classes,classMemeber where classMemeber.user_id = ? and classMemeber.class_id = classes.class_id ',
+
+
     updatedStatus: 'UPDATE classes SET status = ? WHERE class_id= ?',
     queryById: 'SELECT * FROM classes WHERE class_id= ?',
     updateClassInfo: 'UPDATE classes SET class_name = ?,course_id=?,user_id=? WHERE class_id= ?',

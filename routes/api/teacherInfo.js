@@ -28,5 +28,7 @@ router.post('/daleteUserList', controller.daleteUserList);
 // 导出筛选
 router.post('/queryAllFilter', controller.queryAllFilter);
 
+// 查询所有教师ID
+router.get('/queryAllTeaId', controller.queryAllTeaId);
 
 module.exports = router

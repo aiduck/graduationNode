@@ -36,11 +36,13 @@ let queryLimitTeam = async(req, res, next) => {
     let params = req.query;
     let pageSize = params.pageSize;
     let currentPage = params.currentPage;
+    let usertype = params.usertype;
+    let user_id = params.user_id;
 
     let startNum = (currentPage - 1) * pageSize;
     let size = pageSize * 1;
     try {
-        let teamPro = await projectTeamDao.queryLimitTeam(startNum,size);
+        let teamPro = await projectTeamDao.queryLimitTeam(startNum,size,usertype,user_id);
         console.log(teamPro);
         if(teamPro.code === 200) {
             let data = {

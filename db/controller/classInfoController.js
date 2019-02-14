@@ -40,13 +40,17 @@ let insterClass = async (req, res, next) => {
 // 查询教学班级
 let queryLimitClass = async(req, res, next) => {
     let params = req.query;
+    let usertype = params.usertype;
+    let user_id = params.user_id;
+
+
     let pageSize = params.pageSize;
     let currentPage = params.currentPage;
 
     let startNum = (currentPage - 1) * pageSize;
     let size = pageSize * 1;
     try {
-        let classPro = await classInfoDao.queryLimitClass(startNum,size);
+        let classPro = await classInfoDao.queryLimitClass(startNum,size,usertype,user_id);
         console.log(classPro);
         if(classPro.code === 200) {
             let data = {

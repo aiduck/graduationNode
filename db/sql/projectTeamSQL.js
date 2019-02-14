@@ -5,6 +5,14 @@ var projectTeamSQL = {
     where team.course_id = course.course_id and team.class_id = classes.class_id and team.user_id = student.user_id  and team.project_id = project.project_id  limit ?, ?`,
     queryNum:'SELECT count(*) as number FROM team',
 
+    queryAllByStu: 'SELECT team.team_id, team.team_name, team.course_id, team.class_id, team.user_id, team.project_id, course_name ,class_name, username, project_name FROM team, team_members, course, classes, student, project where team_members.user_id = ? and team_members.team_id = team.team_id and team.course_id = course.course_id and team.class_id = classes.class_id and team.user_id = student.user_id  and team.project_id = project.project_id  limit ?, ?',
+    queryNumByStu: 'SELECT count(*) as number FROM team,team_members where team_members.user_id = ? and team_members.team_id = team.team_id',
+    queryAllByTea: `SELECT team.team_id, team.team_name, team.course_id, team.class_id, team.user_id, team.project_id, course_name ,class_name, username, project_name FROM team, course, classes, student, project 
+    where classes.user_id = ? and classes.class_id = team.class_id and team.course_id = course.course_id and team.class_id = classes.class_id and team.user_id = student.user_id  and team.project_id = project.project_id  limit ?, ?`,
+    queryNumByTea: 'SELECT count(*) as number FROM team,classes  where classes.user_id = ? and classes.class_id = team.class_id',
+
+
+
     deleteTeam: 'delete from team where team_id = ?',
     deleteTeamAndMember: 'delete from team_members where team_id = ?',
 

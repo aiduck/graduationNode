@@ -18,7 +18,7 @@ let insterClass = (values) => {
  * @param {*} startNum 
  * @param {*} size 
  */
-let queryLimitClass = (startNum, size) => {
+let queryLimitClass = (startNum, size,usertype,user_id) => {
   return new Promise(async (resolve, reject) => {
     await db.getConnection(async (err, connection) => {
       if (err) {
@@ -30,13 +30,30 @@ let queryLimitClass = (startNum, size) => {
       }
       else {
         try {
-          await connection.beginTransaction()
-          // 内容
-          let sql1 = SQL.ClassSQL.queryLimit;
-          let res1 = await queryHelper.queryPromise(sql1, [startNum, size],connection);
-          // 数量
-          let sql2 = SQL.ClassSQL.queryNum;
-          let res2 = await queryHelper.queryPromise(sql2, null,connection);
+          await connection.beginTransaction();
+          let sql1;
+          let res1;
+          let sql2;
+          let res2;
+          if(usertype === '学生') {
+            // 学生的ID 获取学生参加的项目小组的所有项目id
+            // 通过项目id获取所有成果信息
+            sql1 = SQL.ClassSQL.queryAllByStu;
+            res1 = await queryHelper.queryPromise(sql1, [user_id,startNum, size], connection);
+            sql2 = SQL.ClassSQL.queryNumByStu; 
+            res2 = await queryHelper.queryPromise(sql2, user_id, connection); 
+      
+          } else  if(usertype === '教师') {
+            sql1 = SQL.ClassSQL.queryAllByTea;
+            res1 = await queryHelper.queryPromise(sql1, [user_id,startNum, size], connection);
+            sql2 = SQL.ClassSQL.queryNumByTea; 
+            res2 = await queryHelper.queryPromise(sql2, user_id, connection); 
+          } else if(usertype === '管理员') {
+            sql1 = SQL.ClassSQL.queryLimit;
+            res1 = await queryHelper.queryPromise(sql1, [startNum, size], connection);
+            sql2 = SQL.ClassSQL.queryNum; 
+            res2 = await queryHelper.queryPromise(sql2, null ,connection); 
+          }
           await connection.commit()
           connection.release()
           resolve({
@@ -44,7 +61,6 @@ let queryLimitClass = (startNum, size) => {
             msg: '查询成功',
             data: res1.data,
             number: res2.data[0].number,
-            
           })
         }
         catch (err) {
@@ -141,6 +157,7 @@ let queryById = (class_id) => {
       }
     })
   })
+
 }
 
 /**
@@ -376,7 +393,7 @@ let queryAllClassMemeberFilter = (filter) => {
 }
 
 /**
- * 获取所有课程信息
+ * 获取所有班级信息
  */
 let queryAll = () => {
   let sql = SQL.ClassSQL.queryAll;

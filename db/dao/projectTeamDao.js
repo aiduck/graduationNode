@@ -5,7 +5,7 @@ const util = require('../../util/utils');
 
 
 /**
- * 批量插入
+ * 插入小组信息
  * @param {*数组} values 
  */
 let insterProjectTeam = (values,project_id) => {
@@ -57,7 +57,7 @@ let insterProjectTeam = (values,project_id) => {
  * @param {*} startNum 
  * @param {*} size 
  */
-let queryLimitTeam = (startNum, size) => {
+let queryLimitTeam = (startNum, size,usertype,user_id) => {
 
   return new Promise(async (resolve, reject) => {
     await db.getConnection(async (err, connection) => {
@@ -71,12 +71,31 @@ let queryLimitTeam = (startNum, size) => {
       else {
         try {
           await connection.beginTransaction()
+
+          let sql1;
+          let res1;
+          let sql2;
+          let res2;
+          if(usertype === '学生') {
+
+            sql1 = SQL.projectTeamSQL.queryAllByStu;
+            res1 = await queryHelper.queryPromise(sql1, [user_id,startNum, size], connection);
+            sql2 = SQL.projectTeamSQL.queryNumByStu; 
+            res2 = await queryHelper.queryPromise(sql2, user_id, connection); 
+      
+          } else  if(usertype === '教师') {
+            sql1 = SQL.projectTeamSQL.queryAllByTea;
+            res1 = await queryHelper.queryPromise(sql1, [user_id,startNum, size], connection);
+            sql2 = SQL.projectTeamSQL.queryNumByTea; 
+            res2 = await queryHelper.queryPromise(sql2, user_id, connection); 
+
+          } else if(usertype === '管理员') {
+            sql1 = SQL.projectTeamSQL.queryLimit;
+            res1 = await queryHelper.queryPromise(sql1, [startNum, size],connection);
+            sql2 = SQL.projectTeamSQL.queryNum; 
+            res2 = await queryHelper.queryPromise(sql2, null,connection);
+          }
           
-          let sql1 = SQL.projectTeamSQL.queryLimit;
-          let res1 = await queryHelper.queryPromise(sql1, [startNum, size],connection);
-  
-          let sql2 = SQL.projectTeamSQL.queryNum;
-          let res2 = await queryHelper.queryPromise(sql2, null,connection);
         
           await connection.commit()
           connection.release()

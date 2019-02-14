@@ -294,6 +294,15 @@ let queryAllFilter = (filter) => {
     return queryHelper.queryPromise(strBase, null);
 }
 
+/**
+ * 查询所有教师ID
+ */
+let queryAllTeaId = () => {
+    let sql = SQL.UserSQL.queryAllTeaId;
+    return queryHelper.queryPromise(sql, null);
+}
+
+
 let Dao = {
     insertUserList,
 
@@ -309,6 +318,7 @@ let Dao = {
 
     daleteUserList,
 
-    queryAllFilter
+    queryAllFilter,
+    queryAllTeaId
 }
 module.exports = Dao

@@ -3,33 +3,6 @@
     "msg": "请求成功",
     "data": {
         "route" : [
-            {   
-                "path": "/basicInfo"
-            },
-            {
-                "path": "/userInfo"
-            },
-            {
-                "path": "/userDetails/:userId/:isCheck"
-            },
-            {
-                "path": "/teacherInfo"
-            },
-            {
-                "path": "/teacherInfo/:userId/:isCheck"
-            },
-            {
-                "path": "/studentInfo"
-            },
-            {
-                "path": "/studentInfo/:userId/:isCheck"
-            },
-            {
-                "path": "/courseInfo"
-            },
-            {
-                "path": "/courseInfo/:courseId/:isCheck"
-            },
             {
                 "path": "/classInfo"
             },
@@ -83,35 +56,6 @@
             }
         ],
         "menu" : [
-            {
-                "icon": "el-icon-tickets",
-                "index":"/basicInfo",
-                "title": "基础信息"
-            },
-            {
-                "icon": "el-icon-lx-profile",
-                "index": "3",
-                "title": "用户信息",
-                "subs": [
-                    {
-                        "index": "/userInfo",
-                        "title": "用户基本信息"
-                    },
-                    {
-                        "index": "/teacherInfo",
-                        "title": "教师基本信息"
-                    },
-                    {
-                        "index": "/studentInfo",
-                        "title": "学生基本信息"
-                    }
-                ]
-            },
-            {
-                "icon": "el-icon-lx-read",
-                "index": "/courseInfo",
-                "title": "课程信息"
-            },
             {
                 "icon": "el-icon-lx-tag",
                 "index": "5",
