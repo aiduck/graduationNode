@@ -359,6 +359,156 @@ let queryAllFilter = async(req, res, next) => {
     }
 }
 
+// 用户头像文件上传
+let saveUserImgfile = async (req, res, next) =>{
+    const file = req.file
+    let user_id = req.body.user_id;
+    let filename = file.filename;
+    try {
+        let filePro = await userInfoDao.saveUserImgfile(user_id,filename);
+        if(filePro.code === 200) {
+                res.send({
+                    code: 200,
+                    data: filename,
+                    msg: 'success'
+                })
+            } else {
+                utils.deleteFile('/Users/yanghechenji/Desktop/毕设/code/node/public/uploads/fileDemo/',`${file.originalname}`);
+                res.send({
+                    code: 201,
+                    msg: '数据库操作失败'
+                })
+            }
+    }
+    catch (err) {
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
+
+// 个人中心查找用户
+let queryByIdForTeaStu = async (req, res, next) =>{
+    let user_id = req.body.user_id;
+    let usertype =  req.body.usertype;
+
+    try {
+        let userPro = await userInfoDao.queryByIdForTeaStu(user_id,usertype);
+        console.log(userPro)
+        if(userPro.code === 200) {
+            res.send({
+                code: 200,
+                data: userPro.data,
+                msg: 'success'
+            })
+        }
+    }
+    catch (err) {
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
+
+// 更新用户的个人信息
+let updateByIdForTeaStu = async (req, res, next) =>{
+    let user_id = req.body.user_id;
+    let usertype =  req.body.usertype;
+    let userObj = req.body.form;
+    try {
+        let userPro = await userInfoDao.updateByIdForTeaStu(userObj,user_id,usertype);
+        if(userPro.code === 200) {
+            res.send({
+                code: 200,
+                data: userPro.data,
+                msg: 'success'
+            })
+        }
+    }
+    catch (err) {
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
+
+// 查询优秀技能
+let querySkill = async (req, res, next) =>{
+
+    try {
+        let skillPro = await userInfoDao.querySkill();
+        if(skillPro.code === 200) {
+            res.send({
+                code: 200,
+                data: skillPro.data,
+                msg: 'success'
+            })
+        }
+    }
+    catch (err) {
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
+
+// 插入或者更新skill
+let insertUpdateSkill = async (req, res, next) =>{
+    let skillArr = req.body;
+    let values = [];
+    if(skillArr.length !== 0) {
+        skillArr.map((item, index) => {
+            let value = [`${item.skill_name}`,`${item.skill_num}`];
+            // 存入信息
+            values.push(value);
+        })
+    }
+    try {
+        let skillPro = await userInfoDao.insertUpdateSkill(values);
+        if(skillPro.code === 200) {
+            res.send({
+                code: 200,
+                data: skillPro.data,
+                msg: 'success'
+            })
+        }
+    }
+    catch (err) {
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+}
+
+// 个人中心数据汇总
+let queryTotalNum = async (req, res, next) => {
+
+    try {
+        let totalPro = await userInfoDao.queryTotalNum();
+        if(totalPro.code === 200) {
+            res.send({
+                code: 200,
+                data: totalPro.data,
+                msg: 'success'
+            })
+        }
+    }
+    catch (err) {
+        res.send({
+            code: 500,
+            msg: err.message || err.msg
+        })
+    }
+
+}
+
+
+
 let controller = {
     queryLimitUser,
     queryUser,
@@ -372,6 +522,12 @@ let controller = {
     updateUserInfo,
 
     daleteUserList,
-    queryAllFilter
+    queryAllFilter,
+    saveUserImgfile,
+    queryByIdForTeaStu,
+    updateByIdForTeaStu,
+    querySkill,
+    insertUpdateSkill,
+    queryTotalNum
 }
 module.exports = controller

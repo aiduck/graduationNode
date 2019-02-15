@@ -1,6 +1,9 @@
 const queryHelper = require('../../util/DBQuery');
 const db = require('../../util/DBConfig');
 const SQL = require('../sql/userInfoSQL');
+const ProjectSQL = require('../sql/projectInfoSQL');
+const ProjectAchiSQL = require('../sql/projectAchiSQL');
+
 const util = require('../../util/utils')
 
 /**
@@ -377,6 +380,182 @@ let queryAllFilter = (filter) => {
     strBase = strBase + util.obj2MySql(filter);
     return queryHelper.queryPromise(strBase, null);
 }
+/**
+ * 上传用户头像
+ * @param {*} user_id 
+ * @param {*} filename 
+ */
+let saveUserImgfile = (user_id,filename) => {
+    let sql = SQL.UserSQL.saveUserImgfile; 
+    return queryHelper.queryPromise(sql, [filename,user_id]);
+}
+
+/**
+ * 个人中心查找用户信息
+ * @param {*} user_id 
+ * @param {*} usertype 
+ */
+let queryByIdForTeaStu = (user_id,usertype) => {
+    let sql;
+    if(usertype === '学生') {
+        sql = SQL.UserSQL.queryByIdForStu; 
+    } else  if(usertype === '教师') {
+        sql = SQL.UserSQL.queryByIdForTea; 
+    } else {
+        sql = SQL.UserSQL.queryByIdPwd; 
+    }
+    return queryHelper.queryPromise(sql, [user_id]);
+}
+
+/**
+ * 个人中心更新用户信息
+ * @param {*} userObj 
+ * @param {*} user_id 
+ * @param {*} usertype 
+ */
+
+let updateByIdForTeaStu = (userObj,user_id,usertype) => {
+    return new Promise(async (resolve, reject) => {
+        await db.getConnection(async (err, connection) => {
+            if (err) {
+                resolve({
+                    code: 501,
+                    err: err,
+                    msg: '获取数据库链接失败'
+                })
+            }
+            else {
+                try {
+                    await connection.beginTransaction()
+                    let str1;
+                    let res1;
+                    let str2;
+                    let res2;
+
+                    let {
+                        username,
+                        email,
+                        telno,
+                        address,
+                        password,
+                        sex,
+                        job_title,
+                        education,
+                        college_id,
+                        major_id,
+                        aclass_id,
+                    } = userObj
+                    str1 =  SQL.UserSQL.updateUser;
+                    res1 = await queryHelper.queryPromise(str1,  [username,email,telno,address,password,user_id],connection);
+
+                    if(usertype === '教师')  {
+                        str2 = SQL.UserSQL.updateUserTea;
+                        res2 = await queryHelper.queryPromise(str2,  [sex,job_title,education,user_id],connection);
+
+                    } else  if(usertype === '学生'){
+                        str2 = SQL.UserSQL.updateUserStu;
+                        res2 = await queryHelper.queryPromise(str2,  [college_id,major_id,aclass_id,user_id],connection);
+                    }
+                    await connection.commit()
+                    connection.release()
+                    resolve({
+                        code: 200,
+                        msg: '插入用户信息成功'
+                    })
+                }
+                catch (err) {
+                    console.log('出错了，准备回滚', err)
+                    await connection.rollback(() => {
+                        console.log('回滚成功')
+                        connection.release()
+                    });
+                    resolve({
+                        code: 500,
+                        err: err,
+                        msg: '数据库操作失败'
+                    })
+                }
+            }
+        })
+    })
+}
+
+
+/**
+ * 查询优秀技能
+ */
+let querySkill = () => {
+    let sql = SQL.UserSQL.querySkill; 
+    return queryHelper.queryPromise(sql, null);
+}
+
+/**
+ * 插入或者更新skill
+ * @param {} values 
+ */
+let insertUpdateSkill = (values) => {
+    let sql = SQL.UserSQL.insertUpdateSkill;
+    return queryHelper.queryPromise(sql, [values]);
+}
+
+/**
+ * 个人中心数据汇总
+ */
+let queryTotalNum = () => {
+    return new Promise(async (resolve, reject) => {
+        await db.getConnection(async (err, connection) => {
+            if (err) {
+                resolve({
+                    code: 501,
+                    err: err,
+                    msg: '获取数据库链接失败'
+                })
+            }
+            else {
+                try {
+                    await connection.beginTransaction()
+                    // 插入用户信息
+                    let sql1 = ProjectSQL.projectSQL.queryNum;
+                    let res1 = await queryHelper.queryPromise(sql1, null,connection);
+
+                    let sql2 = ProjectAchiSQL.projectAchiSQL.queryAllNum;
+                    let res2 = await queryHelper.queryPromise(sql2, null,connection);
+
+                    let sql3 = ProjectAchiSQL.projectAchiSQL.queryAllCaseNum;
+                    let res3 = await queryHelper.queryPromise(sql3, null,connection);
+
+                  
+                    let data = {
+                        allNum: res1.data,
+                        projectNum: res2.data,
+                        achiNum: res3.data
+                    }
+                    
+                    console.log(data);
+                    await connection.commit()
+                    connection.release()
+                    resolve({
+                        code: 200,
+                        msg: '批量插入用户信息成功',
+                        data: data,
+                    })
+                }
+                catch (err) {
+                    console.log('出错了，准备回滚', err)
+                    await connection.rollback(() => {
+                        console.log('回滚成功')
+                        connection.release()
+                    });
+                    resolve({
+                        code: 500,
+                        err: err,
+                        msg: '数据库操作失败'
+                    })
+                }
+            }
+        })
+    })
+}
 
 
 let Dao = {
@@ -396,5 +575,11 @@ let Dao = {
 
     daleteUserList,
     queryAllFilter,
+    saveUserImgfile,
+    queryByIdForTeaStu,
+    updateByIdForTeaStu,
+    querySkill,
+    insertUpdateSkill,
+    queryTotalNum
 }
 module.exports = Dao

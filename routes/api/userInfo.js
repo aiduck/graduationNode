@@ -25,6 +25,23 @@ router.post('/daleteUserList', controller.daleteUserList);
 // 导出筛选
 router.post('/queryAllFilter', controller.queryAllFilter);
 
+// 个人中心查找用户
+router.post('/queryByIdForTeaStu', controller.queryByIdForTeaStu);
+// 更新用户信息
+router.post('/updateByIdForTeaStu', controller.updateByIdForTeaStu);
+// 获取skill
+router.get('/querySkill', controller.querySkill);
+// 插入或者更新skill
+router.post('/insertUpdateSkill', controller.insertUpdateSkill);
+// 获取所有项目数据综合
+router.get('/queryTotalNum', controller.queryTotalNum);
+
+
+
+
+
+
+
 
 
 

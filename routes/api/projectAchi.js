@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 // api/projectAchi/ *
 const controller = require('../../db/controller/projectAchiController');
+const userController = require('../../db/controller/userInfoController');
 
 const path = require('path')
 const multer = require('multer')
@@ -60,8 +61,14 @@ let getUpload = (key, name) => {
 }
 const projectUpload = getUpload('fileDemo', 'uploadFile')
 
+const userImgUpload = getUpload('userImgDemo', 'uploadFile')
+
+
 // 文件上传
 router.post('/saveAchifile', projectUpload, controller.saveAchifile);
+// 用户头像上传
+router.post('/saveUserImgfile', userImgUpload, userController.saveUserImgfile);
+
 
 // 文件信息list加载
 router.post('/getAchifileList', controller.getAchifileList);
